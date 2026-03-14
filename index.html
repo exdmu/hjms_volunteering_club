@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>황지중학교 봉사부 홈페이지</title>
     
-    <!-- 카카오톡/SNS 공유용 설정 -->
+    <!-- 카카오톡/SNS 공유용 설정 (이미지 경로 제거) -->
     <meta property="og:title" content="황지중학교 봉사부">
     <meta property="og:description" content="작은 실천이 만드는 따뜻한 변화! 황지중학교 봉사활동 소식을 확인하세요.">
-    <meta property="og:image" content="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTZfMjcz%2FMDAxNzEzMjYzMzE4NDcw.X5R7zZ_3xAAE9GSqPQZ_2uvEPUD-kv5WATd97skxaXEg.kuwNnd7HINKyaTHNR0a8EFKaQYMmyxTbYYydo27LKq0g.JPEG%2F20240413_064441.jpg&type=sc960_832">
+    <meta property="og:image" content="">
 
     <!-- Google Analytics (GA4) - 투어메이커 기본 ID 반영 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
@@ -183,7 +183,7 @@
                 <button class="text-yellow-600 font-black text-sm hover:underline flex items-center gap-1" onclick="openModal('pendingCriteriaModal')">기준표 확인 &rarr;</button>
             </div>
 
-            <!-- 4. 공지사항 (💡 날짜 제거 반영) -->
+            <!-- 4. 공지사항 -->
             <div class="bento-card col-span-1 md:col-span-2 bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100 flex flex-col">
                 <div class="flex justify-between items-center mb-8">
                     <h3 class="text-xl font-black text-gray-900 flex items-center gap-3"><i class="fas fa-newspaper text-brand"></i> 부서 공지</h3>
@@ -201,10 +201,9 @@
                 </ul>
             </div>
 
-            <!-- 5. 갤러리 -->
-            <div id="gallery" class="bento-card col-span-1 md:col-span-1 bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-sm relative group cursor-pointer" onclick="openModal('galleryNoticeModal')">
-                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1593113514676-5915d315589c?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:scale-110 transition-transform duration-700"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            <!-- 5. 갤러리 (💡 배경 이미지 제거 및 브랜드 그라데이션 적용) -->
+            <div id="gallery" class="bento-card col-span-1 md:col-span-1 bg-gradient-to-tr from-gray-800 to-gray-950 rounded-[2.5rem] overflow-hidden shadow-sm relative group cursor-pointer border border-gray-800" onclick="openModal('galleryNoticeModal')">
+                <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, #22c55e 1px, transparent 0); background-size: 20px 20px;"></div>
                 <div class="relative z-10 p-8 h-full flex flex-col justify-end text-white">
                     <i class="fas fa-camera text-2xl mb-2 text-brand"></i>
                     <h3 class="text-xl font-black mb-1">활동 갤러리</h3>
@@ -236,7 +235,7 @@
         </div>
     </main>
 
-    <!-- 푸터 (조직도 순서 변경 반영) -->
+    <!-- 푸터 -->
     <footer class="bg-white border-t border-gray-100 pt-20 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
@@ -268,19 +267,16 @@
                     <h4 class="font-black text-gray-900 text-[11px] tracking-[0.2em] uppercase mb-6">Contact Support</h4>
                     <div class="bg-gray-50 p-8 rounded-[2.5rem] w-full border border-gray-100 shadow-inner">
                         <ul class="space-y-6 text-sm font-black">
-                            <!-- 💡 부장 겸 홈페이지 관리자 이다은 학생 (최상단) -->
                             <li class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-brand text-white flex items-center justify-center shrink-0 shadow-md transition-transform hover:rotate-3"><i class="fas fa-user-cog text-xl"></i></div>
                                 <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Club Leader & Admin</span><span class="text-gray-800 text-base leading-none">이다은 학생 (부장)</span></div>
                             </li>
-                            <!-- 💡 차장 이소이 학생 (이다은 학생 다음) -->
                             <li class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 shadow-sm border border-gray-50 shrink-0"><i class="fas fa-user-circle text-xl"></i></div>
                                 <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Vice Leader</span><span class="text-gray-800 text-base leading-none">이소이 학생 (차장)</span></div>
                             </li>
-                            <!-- 💡 부장 이메일 -->
                             <li class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-500 shadow-sm border border-gray-50 shrink-0"><i class="fas fa-envelope text-xl"></i></div>
+                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-500 shadow-sm border border-gray-100 shrink-0"><i class="fas fa-envelope text-xl"></i></div>
                                 <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Club Leader Mail</span><a href="mailto:exdmuu@gmail.com" class="text-gray-800 text-base hover:text-brand transition-colors leading-none">exdmuu@gmail.com</a></div>
                             </li>
                         </ul>
@@ -322,11 +318,11 @@
                     <div class="w-full space-y-4 font-bold text-left">
                         <div class="p-6 rounded-[2.5rem] border-2 border-blue-100 bg-blue-50/50 flex items-center justify-between group cursor-pointer hover:border-blue-400 transition-all" onclick="closeModal('scheduleListModal'); setTimeout(() => openModal('plasticModal'), 300)">
                             <div><h4 class="text-blue-700 text-lg leading-tight mb-1">반별 플라스틱 대항전 ♻️</h4><p class="text-[11px] text-blue-400 uppercase tracking-widest font-black">Open Ranking &rarr;</p></div>
-                            <i class="fas fa-chevron-right text-blue-200 group-hover:translate-x-1 transition-transform"></i>
+                            <i class="fas fa-chevron-right text-blue-200"></i>
                         </div>
-                        <div class="p-6 rounded-[2.5rem] border border-gray-100 bg-gray-50 flex items-center justify-between opacity-60">
+                        <div class="p-6 rounded-[2.5rem] border border-gray-200 bg-gray-50 flex items-center justify-between opacity-60">
                             <div><h4 class="text-gray-600 text-lg leading-tight mb-1">학교 대청소 봉사 🧹</h4><p class="text-[11px] text-gray-400 uppercase tracking-widest font-black">Schedule Pending</p></div>
-                            <span class="bg-white text-gray-300 text-[8px] font-black px-2 py-1 rounded-full border border-gray-100 uppercase tracking-tighter">Wait</span>
+                            <span class="bg-white text-gray-300 text-[8px] font-black px-2 py-1 rounded-full border border-gray-100 uppercase tracking-tighter shadow-sm">Wait</span>
                         </div>
                     </div>
                 </div>
