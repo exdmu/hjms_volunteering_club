@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>황지중학교 봉사부 홈페이지</title>
     
-    <!-- 카카오톡 공유하기 썸네일 및 정보 설정 (Open Graph) -->
+    <!-- 카카오톡/SNS 공유용 설정 -->
     <meta property="og:title" content="황지중학교 봉사부">
     <meta property="og:description" content="작은 실천이 만드는 따뜻한 변화! 황지중학교 봉사활동 소식을 확인하세요.">
     <meta property="og:image" content="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTZfMjcz%2FMDAxNzEzMjYzMzE4NDcw.X5R7zZ_3xAAE9GSqPQZ_2uvEPUD-kv5WATd97skxaXEg.kuwNnd7HINKyaTHNR0a8EFKaQYMmyxTbYYydo27LKq0g.JPEG%2F20240413_064441.jpg&type=sc960_832">
 
-    <!-- Google Analytics (GA4) -->
+    <!-- Google Analytics (GA4) - 투어메이커 기본 ID 반영 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -23,23 +23,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FontAwesome (SVG JS 방식) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                        sans: ['Pretendard', '"Noto Sans KR"', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            light: '#dcfce7', // 연한 초록색 (배경/포인트용)
-                            DEFAULT: '#22c55e', // 메인 초록색 (자연/봉사 느낌)
-                            dark: '#15803d', // 짙은 초록색 (그라데이션 및 호버 효과용)
+                            light: '#dcfce7',
+                            DEFAULT: '#22c55e', 
+                            dark: '#15803d', 
                         }
                     }
                 }
@@ -47,370 +47,377 @@
         }
     </script>
     <style>
-        /* 커스텀 스크롤바 (웹킷 브라우저용) */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+        body { background-color: #f4f4f5; }
         
-        /* 썸네일용 대표 이미지 (투어메이커 가이드라인 반영) */
-        .meta-thumbnail { display: none; }
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 30px -10px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* 상단 스크롤 진행 바 */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, #22c55e, #fbbf24);
+            z-index: 100;
+            transition: width 0.1s;
+        }
+
+        /* 알림 메시지함 스타일 */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            font-weight: bold;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased font-sans pt-20">
+<body class="text-gray-800 antialiased font-sans pt-24">
 
-    <!-- 카톡 전송용 썸네일 이미지 (숨김 처리) -->
-    <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTZfMjcz%2FMDAxNzEzMjYzMzE4NDcw.X5R7zZ_3xAAE9GSqPQZ_2uvEPUD-kv5WATd97skxaXEg.kuwNnd7HINKyaTHNR0a8EFKaQYMmyxTbYYydo27LKq0g.JPEG%2F20240413_064441.jpg&type=sc960_832" alt="썸네일" class="meta-thumbnail">
+    <!-- 스크롤 진행 바 -->
+    <div id="scroll-progress"></div>
+
+    <!-- 공유 성공 메시지용 토스트 -->
+    <div id="toast">링크가 복사되었습니다! 🔗</div>
+
+    <!-- 플로팅 버튼 그룹 -->
+    <div class="fixed bottom-6 right-6 z-[40] flex flex-col gap-3">
+        <button onclick="copyCurrentUrl()" class="w-12 h-12 bg-white shadow-lg border border-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all">
+            <i class="fas fa-share-alt"></i>
+        </button>
+        <button onclick="window.scrollTo(0,0)" class="w-12 h-12 bg-brand text-white shadow-lg rounded-full flex items-center justify-center hover:scale-110 transition-all">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
 
     <!-- 네비게이션 바 -->
-    <nav class="fixed w-full bg-white/90 backdrop-blur-md z-50 top-0 shadow-sm transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- 로고 영역 -->
-                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img class="h-12 w-auto" src="https://blogger.googleusercontent.com/img/a/AVvXsEjC9ICWNJiRcpgCRJBwSrJF6mdx_SaKd68KPbco2kqIfMvNnm2t-k3OKWLJ6YINRPdfqyU-x3665scA9SLslqcgQOhLOzaS8BRFCxdCJttV23lk3KcNNZ0AY39SV1jHkBzgEP3VClsgenOTqeoS46das_N4_5L5jVccPeVpjMkneP1Ag59GqWZmROV9Dq4=w200-h59" alt="황지중학교 로고">
+    <nav class="fixed w-full z-50 top-0 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center cursor-pointer gap-2" onclick="window.scrollTo(0,0)">
+                    <img class="h-10 w-auto" src="image_066c97.png" alt="황지중학교 로고" onerror="this.src='https://via.placeholder.com/40x40?text=로고'">
+                    <span class="font-bold text-gray-900 tracking-tight hidden sm:block">학생회 봉사부</span>
                 </div>
                 
-                <!-- 데스크탑 메뉴 -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#guide" class="text-gray-600 hover:text-brand font-medium transition-colors">봉사활동 안내</a>
-                    <a href="#events" class="text-gray-600 hover:text-brand font-medium transition-colors">봉사부 이벤트</a>
-                    <a href="#notice" class="text-gray-600 hover:text-brand font-medium transition-colors">공지사항</a>
-                    <a href="#gallery" class="text-gray-600 hover:text-brand font-medium transition-colors">활동 기록</a>
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="#dashboard" class="px-4 py-2 text-sm text-gray-700 hover:text-brand font-bold rounded-full transition-all">대시보드</a>
+                    <a href="#events" class="px-4 py-2 text-sm text-gray-700 hover:text-brand font-bold rounded-full transition-all">캠페인</a>
+                    <a href="#gallery" class="px-4 py-2 text-sm text-gray-700 hover:text-brand font-bold rounded-full transition-all">활동기록</a>
                 </div>
 
-                <!-- 모바일 햄버거 버튼 -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-brand focus:outline-none p-2">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                    <button id="mobile-menu-btn" class="p-2 text-gray-600 focus:outline-none"><i class="fas fa-bars text-xl"></i></button>
                 </div>
             </div>
         </div>
-
-        <!-- 모바일 드롭다운 메뉴 -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#guide" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand hover:bg-brand-light/30">안내 및 신청</a>
-                <a href="#events" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand hover:bg-brand-light/30">이벤트 참여</a>
-                <a href="#notice" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand hover:bg-brand-light/30">공지사항</a>
-                <a href="#gallery" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand hover:bg-brand-light/30">봉사활동 기록</a>
-            </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-200 absolute w-full shadow-lg p-4 space-y-2">
+            <a href="#dashboard" class="mobile-link block p-3 font-bold text-gray-800 rounded-xl hover:bg-gray-50">대시보드</a>
+            <a href="#events" class="mobile-link block p-3 font-bold text-gray-800 rounded-xl hover:bg-gray-50">캠페인</a>
+            <a href="#gallery" class="mobile-link block p-3 font-bold text-gray-800 rounded-xl hover:bg-gray-50">활동기록</a>
         </div>
     </nav>
 
-    <!-- 히어로 섹션 (메인 배너) -->
-    <header class="relative bg-brand text-white overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-brand to-brand-dark opacity-90"></div>
-        <!-- 배경 장식 (패턴) -->
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20" id="dashboard">
         
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col md:flex-row items-center">
-            <div class="w-full md:w-1/2 text-center md:text-left z-10">
-                <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-white text-sm font-semibold tracking-wide mb-4">황지중학교 봉사부</span>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight">
-                    작은 실천이 만드는 <br>
-                    <span class="text-yellow-300">따뜻한 변화</span>
-                </h1>
-                <p class="text-lg md:text-xl text-blue-50 mb-8 max-w-lg mx-auto md:mx-0 font-light leading-relaxed">
-                    어떤 봉사활동이 있는지, 어떻게 신청하는지 몰랐다면?<br>
-                    황지중학교 봉사부에서 모든 정보를 쉽게 알려드려요!
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
-                    <a href="#guide" class="bg-white text-brand font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 text-center">
-                        봉사활동 알아보기
-                    </a>
-                    <a href="#notice" class="bg-transparent border-2 border-white/50 text-white font-bold py-3 px-8 rounded-full hover:bg-white/10 transition-all text-center">
-                        새로운 소식
-                    </a>
-                </div>
-            </div>
-            <!-- 일러스트/아이콘 영역 -->
-            <div class="w-full md:w-1/2 mt-12 md:mt-0 flex justify-center z-10 hidden sm:flex">
-                <div class="relative w-64 h-64 md:w-80 md:h-80 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-2xl">
-                    <i class="fas fa-hands-holding-heart text-8xl md:text-9xl text-yellow-300 drop-shadow-lg transform -rotate-12 hover:rotate-0 transition-transform duration-500"></i>
-                </div>
-            </div>
+        <div class="py-12 md:py-20 text-center md:text-left">
+            <span class="text-brand font-black tracking-widest text-[10px] uppercase mb-3 block">Hwangji Middle School Volunteer</span>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tighter text-gray-900">
+                작은 실천,<br><span class="text-brand">따뜻한 변화.</span>
+            </h1>
         </div>
-    </header>
 
-    <!-- 메인 컨텐츠 영역 -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
-
-        <!-- 1. 봉사활동 안내 섹션 -->
-        <section id="guide" class="scroll-mt-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">봉사활동 A to Z 💡</h2>
-                <p class="text-gray-500">일정부터 봉사 시간 인정까지, 궁금한 점을 모두 모았어요!</p>
-            </div>
+        <!-- 🍱 벤토 박스 그리드 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- 카드 1 (버튼 기능 수정) -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow border border-gray-100 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 bg-blue-100 text-brand rounded-full flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        <i class="far fa-calendar-alt"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">이달의 봉사 일정</h3>
-                    <p class="text-gray-600 mb-6 flex-grow">교내외에서 진행되는 이번 달 추천 봉사활동 일정을 한눈에 확인하세요.</p>
-                    <button class="text-brand font-semibold hover:text-brand-dark" onclick="alert('아직 캘린더 정리 중! 일정은 미정이야 🗓️ 조금만 기다려줘~')">자세히 보기 &rarr;</button>
+            <!-- 1. 메인 가이드 카드 -->
+            <div class="bento-card col-span-1 md:col-span-2 row-span-2 bg-gradient-to-br from-brand to-brand-dark rounded-[2.5rem] p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-sm">
+                <div class="absolute -right-12 -bottom-12 opacity-10 transform rotate-12"><i class="fas fa-heart text-[15rem]"></i></div>
+                <div class="relative z-10">
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black tracking-widest mb-6 border border-white/20">GUIDE</span>
+                    <h2 class="text-3xl md:text-4xl font-black mb-6 leading-tight">봉사활동 A to Z,<br>쉽게 시작하세요.</h2>
+                    <p class="text-green-50/80 font-medium max-w-xs leading-relaxed mb-8">황지중학교 학생들을 위한 봉사 신청 매뉴얼과 필수 팁을 모두 모았습니다.</p>
                 </div>
-                
-                <!-- 카드 2 -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow border border-gray-100 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-battery-full text-yellow-500 drop-shadow-sm"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">봉사시간 알차게 채우는 법🔋</h3>
-                    <p class="text-gray-600 mb-6 flex-grow">생기부 봉사시간을 어떻게 채워야 할지 막막한가요? 선배들이 추천하는 핵심 팁을 확인해 보세요!</p>
-                    <button class="text-green-500 font-bold hover:text-green-700 transition-colors" onclick="openModal('tipsModal')">꿀팁 확인하기 &rarr;</button>
-                </div>
-
-                <!-- 카드 3 (버튼 기능 수정) -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow border border-gray-100 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">시간 인정 여부</h3>
-                    <p class="text-gray-600 mb-6 flex-grow">이 활동은 생기부에 들어갈까? 봉사시간 인정 기준을 정확하게 알려드립니다.</p>
-                    <button class="text-yellow-500 font-semibold hover:text-yellow-700" onclick="alert('기준표 확인 중! 아직 미정이야 📝 곧 공지할게!')">기준 확인하기 &rarr;</button>
-                </div>
+                <button onclick="openModal('tipsModal')" class="relative z-10 bg-white text-brand px-8 py-4 rounded-2xl font-black hover:bg-gray-50 transition-all shadow-xl flex items-center gap-3 w-max">
+                    필수 꿀팁 확인하기 <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
-        </section>
 
-        <!-- 2. 봉사부 이벤트 섹션 -->
-        <section id="events" class="scroll-mt-24">
-            <div class="bg-brand-light/30 rounded-3xl p-8 md:p-12">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-10">
-                    <div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">🗓️ 진행예정 이벤트</h2>
-                        <p class="text-gray-600">봉사부에서 준비한 재미있는 캠페인에 참여하고 선물도 받아가세요!</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 이벤트 배너 1 (수정됨) -->
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-md flex flex-col sm:flex-row hover:shadow-lg transition-shadow">
-                        <div class="bg-green-400 sm:w-1/3 flex items-center justify-center p-6 sm:p-0">
-                            <i class="fas fa-recycle text-5xl text-white"></i>
-                        </div>
-                        <div class="p-6 sm:w-2/3 flex flex-col justify-center">
-                            <span class="text-xs font-bold text-blue-500 bg-blue-100 px-2 py-1 rounded-full inline-block w-max mb-2">커밍쑨</span>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">반별 플라스틱 모으기 대항전 ♻️</h3>
-                            <p class="text-gray-500 text-sm mb-4">어느 반이 제일 많이 모을까? 1등 반에는 모두가 좋아하는 작은 간식 선물을 쏩니다! 다들 기대해!</p>
-                            <span class="text-xs text-gray-400">오픈 예정</span>
-                        </div>
-                    </div>
-
-                    <!-- 이벤트 배너 2 (수정됨) -->
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-md flex flex-col sm:flex-row hover:shadow-lg transition-shadow">
-                        <div class="bg-gray-300 sm:w-1/3 flex items-center justify-center p-6 sm:p-0">
-                            <i class="fas fa-question text-5xl text-white"></i>
-                        </div>
-                        <div class="p-6 sm:w-2/3 flex flex-col justify-center">
-                            <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-full inline-block w-max mb-2">미정</span>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">아직 비밀이야 🤫 (미정)</h3>
-                            <p class="text-gray-500 text-sm mb-4">봉사부에서 완전 재밌는 다음 이벤트를 기획 중이야! 조금만 기다려줘~</p>
-                            <span class="text-xs text-gray-400">-</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- 2. 이달의 일정 -->
+            <div class="bento-card bg-white rounded-[2.5rem] p-8 flex flex-col shadow-sm border border-gray-100">
+                <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-inner"><i class="far fa-calendar-check"></i></div>
+                <h3 class="text-xl font-black text-gray-900 mb-2 leading-tight">이달의 일정</h3>
+                <p class="text-sm text-gray-500 mb-6 flex-grow leading-relaxed font-medium">3월에 진행되는 봉사 활동 리스트를 확인해 보세요.</p>
+                <button class="text-blue-600 font-black text-sm hover:underline flex items-center gap-1" onclick="openModal('scheduleListModal')">상세 일정 보기 &rarr;</button>
             </div>
-        </section>
 
-        <!-- 3. 공지사항 섹션 -->
-        <section id="notice" class="scroll-mt-24">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">📢 공지사항 & 업데이트</h2>
-                <a href="#" class="text-brand hover:underline mt-2 md:mt-0 font-medium">전체보기</a>
+            <!-- 3. 인정 기준 -->
+            <div class="bento-card bg-white rounded-[2.5rem] p-8 flex flex-col shadow-sm border border-gray-100">
+                <div class="w-12 h-12 bg-yellow-50 text-yellow-500 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-inner"><i class="fas fa-shield-check"></i></div>
+                <h3 class="text-xl font-black text-gray-900 mb-2 leading-tight">인정 기준</h3>
+                <p class="text-sm text-gray-500 mb-6 flex-grow leading-relaxed font-medium">생기부에 기록 가능한 봉사활동의 정확한 가이드</p>
+                <button class="text-yellow-600 font-black text-sm hover:underline flex items-center gap-1" onclick="openModal('pendingCriteriaModal')">기준표 확인 &rarr;</button>
             </div>
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <ul class="divide-y divide-gray-100">
-                    <li class="p-5 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded">예고</span>
-                            <span class="font-medium text-gray-800">[안내] '반별 플라스틱 모으기 대항전'이 곧 시작됩니다! 🔥</span>
-                        </div>
-                        <span class="text-sm text-gray-400 hidden sm:block">2026.03.14</span>
+
+            <!-- 4. 공지사항 (💡 날짜 제거 반영) -->
+            <div class="bento-card col-span-1 md:col-span-2 bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100 flex flex-col">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl font-black text-gray-900 flex items-center gap-3"><i class="fas fa-newspaper text-brand"></i> 부서 공지</h3>
+                    <span class="text-[10px] text-gray-400 font-black tracking-widest uppercase bg-gray-50 px-3 py-1 rounded-full border border-gray-100">Archive</span>
+                </div>
+                <ul class="space-y-4 font-bold">
+                    <li class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-gray-100" onclick="openModal('plasticModal')">
+                        <span class="w-2 h-2 bg-brand rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>
+                        <span class="text-[14px] text-gray-800 flex-grow">반별 플라스틱 모으기 대항전 안내</span>
                     </li>
-                    <li class="p-5 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded">미정</span>
-                            <span class="font-medium text-gray-800">다음 공지사항을 준비 중입니다.</span>
-                        </div>
-                        <span class="text-sm text-gray-400 hidden sm:block">-</span>
-                    </li>
-                    <li class="p-5 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded">미정</span>
-                            <span class="font-medium text-gray-800">다음 공지사항을 준비 중입니다.</span>
-                        </div>
-                        <span class="text-sm text-gray-400 hidden sm:block">-</span>
+                    <li class="flex items-center gap-4 p-4 opacity-40">
+                        <span class="w-2 h-2 bg-gray-200 rounded-full"></span>
+                        <span class="text-[14px] text-gray-400 flex-grow italic">다음 공지사항 준비 중 (미정)</span>
                     </li>
                 </ul>
             </div>
-        </section>
 
-        <!-- 4. 봉사활동 기록 (갤러리) 섹션 -->
-        <section id="gallery" class="scroll-mt-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">📸 우리의 따뜻한 기록</h2>
-                <p class="text-gray-500">황지중학교 학생들의 멋진 활약상을 모아봤어요!</p>
+            <!-- 5. 갤러리 -->
+            <div id="gallery" class="bento-card col-span-1 md:col-span-1 bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-sm relative group cursor-pointer" onclick="openModal('galleryNoticeModal')">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1593113514676-5915d315589c?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:scale-110 transition-transform duration-700"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                <div class="relative z-10 p-8 h-full flex flex-col justify-end text-white">
+                    <i class="fas fa-camera text-2xl mb-2 text-brand"></i>
+                    <h3 class="text-xl font-black mb-1">활동 갤러리</h3>
+                    <p class="text-[11px] text-gray-400 font-bold tracking-widest uppercase">Memories &rarr;</p>
+                </div>
             </div>
 
-            <!-- CSS Grid 갤러리 (사진 마우스오버 효과 제거됨) -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="aspect-square bg-gray-200 rounded-xl overflow-hidden group relative">
-                    <div class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-300 transition-transform duration-500 group-hover:scale-110">
-                        <i class="fas fa-camera text-4xl"></i>
-                    </div>
+            <!-- 6. 이벤트 배너 -->
+            <div id="events" class="bento-card col-span-1 md:col-span-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2.5rem] p-10 text-white shadow-lg flex flex-col sm:flex-row items-center sm:justify-between gap-8 cursor-pointer hover:scale-[1.01]" onclick="openModal('plasticModal')">
+                <div class="flex-grow text-center sm:text-left">
+                    <span class="bg-yellow-400 text-yellow-900 text-[10px] font-black px-4 py-1.5 rounded-full mb-4 inline-block animate-pulse tracking-widest">RANKING BOARD</span>
+                    <h2 class="text-3xl font-black mb-3 leading-tight text-white">반별 플라스틱 대항전 ♻️</h2>
+                    <p class="text-blue-100 text-[13px] font-bold">누적 무게 1등 반 전원 간식 증정!</p>
                 </div>
-                <div class="aspect-square bg-gray-200 rounded-xl overflow-hidden group relative">
-                    <div class="w-full h-full bg-green-100 flex items-center justify-center text-green-300 transition-transform duration-500 group-hover:scale-110">
-                        <i class="fas fa-image text-4xl"></i>
-                    </div>
-                </div>
-                <div class="aspect-square bg-gray-200 rounded-xl overflow-hidden group relative">
-                    <div class="w-full h-full bg-yellow-100 flex items-center justify-center text-yellow-300 transition-transform duration-500 group-hover:scale-110">
-                        <i class="fas fa-images text-4xl"></i>
-                    </div>
-                </div>
-                <div class="aspect-square bg-gray-200 rounded-xl overflow-hidden group relative">
-                    <div class="w-full h-full bg-pink-100 flex items-center justify-center text-pink-300 transition-transform duration-500 group-hover:scale-110">
-                        <i class="fas fa-photo-video text-4xl"></i>
-                    </div>
+                <div class="w-24 h-24 bg-white/10 backdrop-blur-md rounded-[2rem] flex items-center justify-center flex-shrink-0 border border-white/20 shadow-xl transform rotate-3 transition-transform hover:rotate-0">
+                    <i class="fas fa-trophy text-4xl text-yellow-300"></i>
                 </div>
             </div>
-            
-            <div class="text-center mt-10">
-                 <button class="bg-white border border-gray-300 text-gray-700 font-medium py-2 px-6 rounded-full hover:bg-gray-50 transition-colors shadow-sm">
-                    사진 더 보기
-                </button>
-            </div>
-        </section>
 
+            <!-- 7. 다음 캠페인 잠금 박스 -->
+            <div class="bento-card bg-white rounded-[2.5rem] p-8 border border-gray-100 flex items-center justify-center text-center shadow-sm">
+                <div>
+                    <div class="w-16 h-16 mx-auto bg-gray-50 text-gray-200 rounded-full flex items-center justify-center text-2xl mb-4"><i class="fas fa-lock"></i></div>
+                    <h3 class="text-lg font-black text-gray-800 mb-1 leading-tight">Next Coming</h3>
+                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest leading-none">Ready to start</p>
+                </div>
+            </div>
+
+        </div>
     </main>
 
-    <!-- 푸터 -->
-    <footer class="bg-green-900 text-green-50 pt-16 pb-8 border-t-4 border-brand">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
-                <!-- 학교 로고 및 정보 -->
-                <div class="flex flex-col items-center md:items-start">
-                    <div class="bg-white p-2 rounded-lg mb-4 inline-block">
-                        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjC9ICWNJiRcpgCRJBwSrJF6mdx_SaKd68KPbco2kqIfMvNnm2t-k3OKWLJ6YINRPdfqyU-x3665scA9SLslqcgQOhLOzaS8BRFCxdCJttV23lk3KcNNZ0AY39SV1jHkBzgEP3VClsgenOTqeoS46das_N4_5L5jVccPeVpjMkneP1Ag59GqWZmROV9Dq4=w200-h59" alt="황지중학교 푸터 로고" class="h-10 w-auto opacity-90">
+    <!-- 푸터 (조직도 순서 변경 반영) -->
+    <footer class="bg-white border-t border-gray-100 pt-20 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+                
+                <div class="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left">
+                    <div class="flex items-center gap-4 mb-6 transition-all hover:scale-105">
+                        <img src="image_066c97.png" alt="황지중학교 푸터 로고" class="h-14 w-auto grayscale opacity-80" onerror="this.src='https://via.placeholder.com/40x40?text=로고'">
+                        <div class="flex flex-col text-left">
+                            <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none mb-1">학생회 봉사부</span>
+                            <span class="text-[10px] font-black text-brand tracking-[0.3em] uppercase">Club.Hwangji</span>
+                        </div>
                     </div>
-                    <p class="text-sm font-bold text-white mb-2">황지중학교 학생회 봉사부</p>
-                    <p class="text-xs text-green-200/80 text-center md:text-left">
-                        강원특별자치도 태백시 (황지동)<br>
-                        봉사활동 관련 문의: 봉사부장 이다은 학생에게!
+                    <p class="text-[13px] text-gray-500 leading-relaxed font-bold mb-8 max-w-xs">
+                        우리의 작은 손길이 모여 더 따뜻한 학교와 지역사회를 만들어갑니다.
                     </p>
+                    <a href="https://www.instagram.com/_exdmu" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gradient-to-tr hover:from-yellow-400 hover:to-purple-600 hover:text-white transition-all shadow-sm border border-gray-100" title="이다은 인스타그램 바로가기"><i class="fab fa-instagram text-xl"></i></a>
                 </div>
 
-                <!-- 빠른 링크 -->
-                <div class="flex space-x-8 text-sm">
-                    <div class="flex flex-col space-y-2 text-center md:text-left">
-                        <span class="font-bold text-white mb-1">관련 사이트</span>
-                        <a href="https://hwangji.gwe.ms.kr/main.do" target="_blank" rel="noopener noreferrer" class="text-green-100 hover:text-white transition-colors">황지중학교 홈페이지</a>
+                <div class="md:col-span-3 flex flex-col items-center md:items-start space-y-6">
+                    <h4 class="font-black text-gray-900 text-[11px] tracking-[0.2em] uppercase">Quick Access</h4>
+                    <ul class="space-y-4 text-[13px] text-gray-500 font-black">
+                        <li><a href="https://www.1365.go.kr/" target="_blank" class="hover:text-brand transition-colors">1365 자원봉사포털</a></li>
+                        <li><a href="https://neis.go.kr/" target="_blank" class="hover:text-brand transition-colors">나이스(NEIS) 연동 안내</a></li>
+                        <li><a href="https://hwangji.gwe.ms.kr/main.do" target="_blank" class="hover:text-brand transition-colors">학교 공식 홈페이지</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-4 flex flex-col items-center md:items-start w-full">
+                    <h4 class="font-black text-gray-900 text-[11px] tracking-[0.2em] uppercase mb-6">Contact Support</h4>
+                    <div class="bg-gray-50 p-8 rounded-[2.5rem] w-full border border-gray-100 shadow-inner">
+                        <ul class="space-y-6 text-sm font-black">
+                            <!-- 💡 부장 겸 홈페이지 관리자 이다은 학생 (최상단) -->
+                            <li class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-brand text-white flex items-center justify-center shrink-0 shadow-md transition-transform hover:rotate-3"><i class="fas fa-user-cog text-xl"></i></div>
+                                <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Club Leader & Admin</span><span class="text-gray-800 text-base leading-none">이다은 학생 (부장)</span></div>
+                            </li>
+                            <!-- 💡 차장 이소이 학생 (이다은 학생 다음) -->
+                            <li class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 shadow-sm border border-gray-50 shrink-0"><i class="fas fa-user-circle text-xl"></i></div>
+                                <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Vice Leader</span><span class="text-gray-800 text-base leading-none">이소이 학생 (차장)</span></div>
+                            </li>
+                            <!-- 💡 부장 이메일 -->
+                            <li class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-500 shadow-sm border border-gray-50 shrink-0"><i class="fas fa-envelope text-xl"></i></div>
+                                <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Club Leader Mail</span><a href="mailto:exdmuu@gmail.com" class="text-gray-800 text-base hover:text-brand transition-colors leading-none">exdmuu@gmail.com</a></div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-
-            <!-- 카피라이트 -->
-            <div class="mt-12 pt-8 border-t border-green-800 flex flex-col items-center">
-                <p class="text-xs text-green-300/60 text-center">
-                    &copy; 2026 황지중학교 봉사부. All rights reserved.
-                </p>
+            <div class="pt-10 border-t border-gray-100 text-center">
+                <p class="text-[10px] text-gray-300 font-black uppercase tracking-[0.4em]">&copy; 2026 HWANGJI VOLUNTEER CLUB. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>
 
-    <!-- 봉사 꿀팁 세부 페이지 (모달 팝업) -->
-    <div id="tipsModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- 배경 어둡게 -->
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" aria-hidden="true" onclick="closeModal('tipsModal')"></div>
-
-            <!-- 모달을 수직 중앙에 맞추기 위한 트릭 -->
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <!-- 모달 컨텐츠 -->
-            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-lightbulb text-green-600"></i>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-xl leading-6 font-bold text-gray-900 mb-4" id="modal-title">
-                                💡 생기부 봉사시간, 이렇게 채워보세요!
-                            </h3>
-                            <div class="mt-2 space-y-4 text-sm text-gray-600">
-                                <!-- 팁 1 -->
-                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                    <h4 class="font-bold text-gray-800 text-base mb-1">1. 1365 자원봉사포털 가입하기</h4>
-                                    <p>봉사활동 실적 관리를 위한 필수 첫 단계입니다. 아직 가입하지 않았다면 먼저 가입을 진행해 주세요. <br><span class="text-red-500 font-medium">(주의: 가입 시 소속 학교를 반드시 '황지중학교'로 설정해야 선생님께서 실적을 확인하실 수 있습니다.)</span></p>
-                                </div>
-                                <!-- 팁 2 -->
-                                <div class="bg-brand-light/50 p-4 rounded-xl border border-brand/20">
-                                    <h4 class="font-bold text-brand-dark text-base mb-1">2. 교내 봉사활동 적극적으로 참여하기 ⭐</h4>
-                                    <p>외부로 멀리 나가지 않아도 학교 안에서 안전하고 확실하게 봉사시간을 채울 수 있습니다. <br><br><strong>핵심 팁:</strong> 학기 초에 학급이나 학교에서 교내 봉사를 모집할 때 주저하지 말고 빠르게 지원해 보세요!</p>
-                                </div>
-                                <!-- 팁 3 -->
-                                <div class="bg-red-50 p-4 rounded-xl border border-red-100">
-                                    <h4 class="font-bold text-red-600 text-base mb-1">3. 나이스(NEIS)로 실적 전송하기 (매우 중요) 🚨</h4>
-                                    <p>1365에서 봉사를 마쳤다고 자동으로 학교에 등록되지 않습니다. 활동 후 반드시 1365 홈페이지에서 <strong>'나이스 연동(실적 전송)'</strong> 버튼을 눌러야 생기부에 반영됩니다. 이 과정을 놓쳐 실적을 누락하는 경우가 많으니 꼭 기억해 주세요!</p>
-                                </div>
-                            </div>
-                        </div>
+    <!-- 모달 라이브러리 -->
+    <div id="tipsModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('tipsModal')"></div>
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-[14px]">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-[1.5rem] bg-brand-light text-brand flex items-center justify-center text-3xl mb-8"><i class="fas fa-lightbulb"></i></div>
+                    <h3 class="text-3xl font-black text-gray-900 mb-8 tracking-tighter text-center">봉사활동 성공 공식 🔋</h3>
+                    <div class="w-full space-y-4 font-bold text-left">
+                        <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100"><h4 class="text-gray-800 mb-2"><span class="text-brand mr-2">01</span> 1365 자원봉사포털 가입</h4><p class="text-gray-400 font-medium">소속 학교를 반드시 '황지중학교'로 설정하세요.</p></div>
+                        <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100"><h4 class="text-gray-800 mb-2"><span class="text-brand mr-2">02</span> 교내 봉사 우선 참여</h4><p class="text-gray-400 font-medium">안전하고 실적 기재가 확실한 학교 캠페인에 우선 지원하세요.</p></div>
+                        <div class="bg-red-50 p-6 rounded-3xl border border-red-100"><h4 class="text-red-600 mb-2"><span class="mr-2">03</span> 나이스 연동 필수</h4><p class="text-red-400 font-medium">활동 완료 후 반드시 '나이스 실적 전송'을 눌러야 합니다.</p></div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-2xl">
-                    <button type="button" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-2 bg-brand text-base font-bold text-white hover:bg-brand-dark focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors" onclick="closeModal('tipsModal')">
-                        확인했습니다
-                    </button>
-                </div>
+                <button class="w-full mt-8 py-4 bg-gray-900 text-white font-black rounded-2xl shadow-xl hover:bg-black transition-all" onclick="closeModal('tipsModal')">확인했습니다</button>
             </div>
         </div>
     </div>
 
-    <!-- 스크립트: 모바일 메뉴 토글 및 모달 제어 -->
+    <div id="scheduleListModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('scheduleListModal')"></div>
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-[14px]">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-[1.5rem] bg-blue-50 text-blue-500 flex items-center justify-center text-3xl mb-8"><i class="fas fa-list-ul"></i></div>
+                    <h3 class="text-3xl font-black text-gray-900 mb-8 tracking-tighter text-center">3월 활동 일정표</h3>
+                    <div class="w-full space-y-4 font-bold text-left">
+                        <div class="p-6 rounded-[2.5rem] border-2 border-blue-100 bg-blue-50/50 flex items-center justify-between group cursor-pointer hover:border-blue-400 transition-all" onclick="closeModal('scheduleListModal'); setTimeout(() => openModal('plasticModal'), 300)">
+                            <div><h4 class="text-blue-700 text-lg leading-tight mb-1">반별 플라스틱 대항전 ♻️</h4><p class="text-[11px] text-blue-400 uppercase tracking-widest font-black">Open Ranking &rarr;</p></div>
+                            <i class="fas fa-chevron-right text-blue-200 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                        <div class="p-6 rounded-[2.5rem] border border-gray-100 bg-gray-50 flex items-center justify-between opacity-60">
+                            <div><h4 class="text-gray-600 text-lg leading-tight mb-1">학교 대청소 봉사 🧹</h4><p class="text-[11px] text-gray-400 uppercase tracking-widest font-black">Schedule Pending</p></div>
+                            <span class="bg-white text-gray-300 text-[8px] font-black px-2 py-1 rounded-full border border-gray-100 uppercase tracking-tighter">Wait</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full mt-8 py-4 bg-gray-900 text-white font-black rounded-2xl shadow-xl" onclick="closeModal('scheduleListModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plasticModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('plasticModal')"></div>
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
+                <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-indigo-50 text-indigo-500 flex items-center justify-center text-3xl mb-8 shadow-inner"><i class="fas fa-trophy"></i></div>
+                <h3 class="text-3xl font-black text-gray-900 mb-2 tracking-tighter">실시간 랭킹 보드</h3>
+                <p class="text-sm text-gray-400 font-bold mb-10 tracking-tight">과연 어느 반이 영광의 1등을 차지할까요?</p>
+                <div class="w-full text-left bg-gray-50/50 p-6 rounded-[2.5rem] border border-gray-100 shadow-inner">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-yellow-100 text-yellow-600 font-black flex items-center justify-center text-sm shadow-sm">1</span><span class="font-black text-gray-700">🥈 집계 대기 중</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Pending</span></div>
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-gray-100 text-gray-400 font-black flex items-center justify-center text-sm shadow-sm">2</span><span class="font-black text-gray-700 italic">쟁탈전 시작 전</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Wait</span></div>
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-orange-50 text-orange-400 font-black flex items-center justify-center text-sm shadow-sm">3</span><span class="font-black text-gray-700 opacity-30 tracking-widest uppercase">Coming</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg">-</span></div>
+                    </div>
+                </div>
+                <button class="w-full mt-8 py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl" onclick="closeModal('plasticModal')">엄청 기대할게요!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pendingCriteriaModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('pendingCriteriaModal')"></div>
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
+                <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-yellow-50 text-yellow-500 flex items-center justify-center text-3xl mb-8"><i class="fas fa-clipboard-check"></i></div>
+                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter">인정 기준 최종 검토 중</h3>
+                <div class="bg-gray-50/50 p-10 rounded-[3rem] border border-dashed border-gray-200">
+                    <p class="text-gray-500 font-bold leading-relaxed">
+                        현재 학교 선생님과 함께 <br>정확한 봉사 인정 기준표를 검토 중입니다.<br><br>
+                        <span class="text-brand text-xl">"조금만 더 기다려 주세요!"</span><br><br>
+                        확정 시 공지사항을 통해 알려드릴게요. 📝
+                    </p>
+                </div>
+                <button class="w-full mt-10 py-4 bg-gray-900 text-white font-black rounded-2xl shadow-xl" onclick="closeModal('pendingCriteriaModal')">확인했습니다</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="galleryNoticeModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('galleryNoticeModal')"></div>
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
+                <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-pink-50 text-pink-500 flex items-center justify-center text-3xl mb-8"><i class="fas fa-camera-retro"></i></div>
+                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter text-gray-800">기록을 준비하고 있어요</h3>
+                <div class="bg-pink-50/30 p-10 rounded-[3rem] border border-pink-100">
+                    <p class="text-gray-500 font-bold leading-relaxed">
+                        우리의 활동이 시작되면,<br>이곳에 멋진 사진들이 가득 채워질 거예요.<br><br>
+                        곧 첫 번째 활동 사진으로 만나요! 📸
+                    </p>
+                </div>
+                <button class="w-full mt-10 py-4 bg-gray-900 text-white font-black rounded-2xl shadow-xl" onclick="closeModal('galleryNoticeModal')">기대할게요!</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 모달 열기 함수
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
+        function openModal(modalId) { document.getElementById(modalId).classList.remove('hidden'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
+        
+        function copyCurrentUrl() {
+            const dummy = document.createElement('input');
+            const text = window.location.href;
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
-        // 모달 닫기 함수
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-            const icon = btn.querySelector('i');
-            const mobileLinks = document.querySelectorAll('.mobile-link');
-
-            // 햄버거 버튼 클릭 이벤트
-            btn.addEventListener('click', () => {
-                menu.classList.toggle('hidden');
-                if(menu.classList.contains('hidden')) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                } else {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                }
-            });
-
-            // 모바일 메뉴 링크 클릭 시 메뉴 닫기
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    menu.classList.add('hidden');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                });
+            const btn = document.getElementById('mobile-menu-btn'), menu = document.getElementById('mobile-menu');
+            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => menu.classList.add('hidden'));
             });
         });
     </script>
