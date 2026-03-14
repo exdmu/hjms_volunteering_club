@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>황지중학교 봉사부 홈페이지</title>
     
-    <!-- 카카오톡/SNS 공유용 설정 (이미지 경로 제거) -->
+    <!-- 카카오톡/SNS 공유용 설정 -->
     <meta property="og:title" content="황지중학교 봉사부">
     <meta property="og:description" content="작은 실천이 만드는 따뜻한 변화! 황지중학교 봉사활동 소식을 확인하세요.">
     <meta property="og:image" content="">
 
-    <!-- Google Analytics (GA4) - 투어메이커 기본 ID 반영 -->
+    <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -119,9 +119,9 @@
     <nav class="fixed w-full z-50 top-0 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
+                <!-- 💡 요청하신 로고 이미지 삭제 및 텍스트 상시 노출 적용 -->
                 <div class="flex-shrink-0 flex items-center cursor-pointer gap-2" onclick="window.scrollTo(0,0)">
-                    <img class="h-10 w-auto" src="image_066c97.png" alt="황지중학교 로고" onerror="this.src='https://via.placeholder.com/40x40?text=로고'">
-                    <span class="font-bold text-gray-900 tracking-tight hidden sm:block">학생회 봉사부</span>
+                    <span class="font-black text-gray-900 tracking-tight text-lg">학생회 봉사부</span>
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-1">
@@ -201,7 +201,7 @@
                 </ul>
             </div>
 
-            <!-- 5. 갤러리 (💡 배경 이미지 제거 및 브랜드 그라데이션 적용) -->
+            <!-- 5. 갤러리 -->
             <div id="gallery" class="bento-card col-span-1 md:col-span-1 bg-gradient-to-tr from-gray-800 to-gray-950 rounded-[2.5rem] overflow-hidden shadow-sm relative group cursor-pointer border border-gray-800" onclick="openModal('galleryNoticeModal')">
                 <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, #22c55e 1px, transparent 0); background-size: 20px 20px;"></div>
                 <div class="relative z-10 p-8 h-full flex flex-col justify-end text-white">
@@ -223,7 +223,7 @@
                 </div>
             </div>
 
-            <!-- 7. 다음 캠페인 잠금 박스 -->
+            <!-- 7. 다음 캠페인 -->
             <div class="bento-card bg-white rounded-[2.5rem] p-8 border border-gray-100 flex items-center justify-center text-center shadow-sm">
                 <div>
                     <div class="w-16 h-16 mx-auto bg-gray-50 text-gray-200 rounded-full flex items-center justify-center text-2xl mb-4"><i class="fas fa-lock"></i></div>
@@ -241,12 +241,10 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
                 
                 <div class="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left">
-                    <div class="flex items-center gap-4 mb-6 transition-all hover:scale-105">
-                        <img src="image_066c97.png" alt="황지중학교 푸터 로고" class="h-14 w-auto grayscale opacity-80" onerror="this.src='https://via.placeholder.com/40x40?text=로고'">
-                        <div class="flex flex-col text-left">
-                            <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none mb-1">학생회 봉사부</span>
-                            <span class="text-[10px] font-black text-brand tracking-[0.3em] uppercase">Club.Hwangji</span>
-                        </div>
+                    <!-- 💡 요청하신 로고 이미지 삭제 및 텍스트 강조 디자인 적용 -->
+                    <div class="flex flex-col text-left mb-6">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none mb-2">학생회 봉사부</span>
+                        <span class="text-[11px] font-black text-brand tracking-[0.4em] uppercase">Club.Hwangji</span>
                     </div>
                     <p class="text-[13px] text-gray-500 leading-relaxed font-bold mb-8 max-w-xs">
                         우리의 작은 손길이 모여 더 따뜻한 학교와 지역사회를 만들어갑니다.
@@ -276,7 +274,7 @@
                                 <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Vice Leader</span><span class="text-gray-800 text-base leading-none">이소이 학생 (차장)</span></div>
                             </li>
                             <li class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-500 shadow-sm border border-gray-100 shrink-0"><i class="fas fa-envelope text-xl"></i></div>
+                                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-500 shadow-sm border border-gray-50 shrink-0"><i class="fas fa-envelope text-xl"></i></div>
                                 <div><span class="block text-[9px] text-gray-400 uppercase tracking-widest mb-1 leading-none">Club Leader Mail</span><a href="mailto:exdmuu@gmail.com" class="text-gray-800 text-base hover:text-brand transition-colors leading-none">exdmuu@gmail.com</a></div>
                             </li>
                         </ul>
@@ -293,7 +291,7 @@
     <div id="tipsModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('tipsModal')"></div>
-            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-[14px]">
+            <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
                 <div class="flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-[1.5rem] bg-brand-light text-brand flex items-center justify-center text-3xl mb-8"><i class="fas fa-lightbulb"></i></div>
                     <h3 class="text-3xl font-black text-gray-900 mb-8 tracking-tighter text-center">봉사활동 성공 공식 🔋</h3>
@@ -337,12 +335,12 @@
             <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
                 <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-indigo-50 text-indigo-500 flex items-center justify-center text-3xl mb-8 shadow-inner"><i class="fas fa-trophy"></i></div>
                 <h3 class="text-3xl font-black text-gray-900 mb-2 tracking-tighter">실시간 랭킹 보드</h3>
-                <p class="text-sm text-gray-400 font-bold mb-10 tracking-tight">과연 어느 반이 영광의 1등을 차지할까요?</p>
+                <p class="text-sm text-gray-400 font-bold mb-10 tracking-tight text-center">과연 어느 반이 영광의 1등을 차지할까요?</p>
                 <div class="w-full text-left bg-gray-50/50 p-6 rounded-[2.5rem] border border-gray-100 shadow-inner">
                     <div class="space-y-4">
-                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-yellow-100 text-yellow-600 font-black flex items-center justify-center text-sm shadow-sm">1</span><span class="font-black text-gray-700">🥈 집계 대기 중</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Pending</span></div>
-                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-gray-100 text-gray-400 font-black flex items-center justify-center text-sm shadow-sm">2</span><span class="font-black text-gray-700 italic">쟁탈전 시작 전</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Wait</span></div>
-                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-orange-50 text-orange-400 font-black flex items-center justify-center text-sm shadow-sm">3</span><span class="font-black text-gray-700 opacity-30 tracking-widest uppercase">Coming</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg">-</span></div>
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-yellow-100 text-yellow-600 font-black flex items-center justify-center text-sm shadow-sm">1</span><span class="font-black text-gray-700 text-sm">🥈 집계 대기 중</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Pending</span></div>
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-gray-100 text-gray-400 font-black flex items-center justify-center text-sm shadow-sm">2</span><span class="font-black text-gray-700 italic text-sm">쟁탈전 시작 전</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg tracking-tighter">Wait</span></div>
+                        <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-transform hover:scale-[1.02]"><div class="flex items-center gap-4"><span class="w-10 h-10 rounded-2xl bg-orange-50 text-orange-400 font-black flex items-center justify-center text-sm shadow-sm">3</span><span class="font-black text-gray-700 opacity-30 tracking-widest uppercase text-sm">Coming</span></div><span class="text-[10px] text-gray-300 font-black bg-gray-50 px-3 py-1.5 rounded-lg">-</span></div>
                     </div>
                 </div>
                 <button class="w-full mt-8 py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl" onclick="closeModal('plasticModal')">엄청 기대할게요!</button>
@@ -355,7 +353,7 @@
             <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('pendingCriteriaModal')"></div>
             <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
                 <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-yellow-50 text-yellow-500 flex items-center justify-center text-3xl mb-8"><i class="fas fa-clipboard-check"></i></div>
-                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter">인정 기준 최종 검토 중</h3>
+                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter text-center">인정 기준 최종 검토 중</h3>
                 <div class="bg-gray-50/50 p-10 rounded-[3rem] border border-dashed border-gray-200">
                     <p class="text-gray-500 font-bold leading-relaxed">
                         현재 학교 선생님과 함께 <br>정확한 봉사 인정 기준표를 검토 중입니다.<br><br>
@@ -373,7 +371,7 @@
             <div class="fixed inset-0 bg-black/60 backdrop-blur-md" onclick="closeModal('galleryNoticeModal')"></div>
             <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full relative z-10 border border-gray-100 shadow-2xl text-center text-[14px]">
                 <div class="w-16 h-16 mx-auto rounded-[1.5rem] bg-pink-50 text-pink-500 flex items-center justify-center text-3xl mb-8"><i class="fas fa-camera-retro"></i></div>
-                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter text-gray-800">기록을 준비하고 있어요</h3>
+                <h3 class="text-3xl font-black text-gray-900 mb-6 tracking-tighter text-gray-800 text-center">기록을 준비하고 있어요</h3>
                 <div class="bg-pink-50/30 p-10 rounded-[3rem] border border-pink-100">
                     <p class="text-gray-500 font-bold leading-relaxed">
                         우리의 활동이 시작되면,<br>이곳에 멋진 사진들이 가득 채워질 거예요.<br><br>
