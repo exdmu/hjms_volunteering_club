@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>황지중학교 봉사부 홈페이지</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- SNS 공유용 설정 -->
     <meta property="og:title" content="황지중학교 봉사부">
@@ -17,166 +18,6 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-JLH9GD9SVR');
-    </script>
-
-    <!-- 💡 Firebase 클라우드 데이터베이스 연동 (전교생 실시간 동기화) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // 🚨 [대표님 확인사항] 깃허브 배포 시 전교생 공유를 위해 아래 빈칸에 Firebase 프로젝트 키를 넣어주세요.
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "",
-            authDomain: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: ""
-        };
-        
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hwangji-vol-club';
-        let currentUser = null;
-        
-        // Firebase 앱 초기화
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // 익명 인증 처리 (데이터베이스 접근 권한)
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("인증 실패:", error);
-            }
-        };
-
-        // UI 렌더링 함수
-        window.renderCheersMain = function(data) {
-            const container = document.getElementById('cheer-wall-container');
-            const addButtonHtml = `
-                <button onclick="openModal('cheerModal')" class="glass-card p-6 rounded-3xl text-slate-400 font-black hover:border-brand hover:text-brand transition-all flex items-center justify-center gap-2 h-32 w-full border-2 border-dashed border-slate-300/50 active:scale-95">
-                    <i class="fas fa-plus-circle"></i> 응원 남기기 ✍️
-                </button>`;
-            
-            let html = '';
-            const bgEmojis = ['💬', '✨', '💛', '🔥', '🍀', '🚀', '🙌'];
-
-            data.forEach((item, index) => {
-                const colors = ["bg-blue-50/70 border-blue-200/50 text-blue-600", "bg-brand-light/70 border-brand/20 text-brand-dark", "bg-yellow-50/70 border-yellow-200/50 text-yellow-600"];
-                const colorClass = colors[index % colors.length];
-                const emoji = bgEmojis[index % bgEmojis.length];
-                html += `
-                    <div class="p-6 ${colorClass} backdrop-blur-md border rounded-3xl shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg font-black flex flex-col justify-between h-32 relative overflow-hidden group">
-                        <div class="absolute -right-2 -bottom-2 text-5xl opacity-10 group-hover:scale-125 transition-transform">${emoji}</div>
-                        <p class="line-clamp-2 text-sm relative z-10">"${item.text}"</p>
-                        ${item.writer ? `<span class="block text-[10px] mt-2 opacity-60 text-right font-bold relative z-10">- ${item.writer}</span>` : ''}
-                    </div>`;
-            });
-            container.innerHTML = html + addButtonHtml;
-        };
-
-        window.renderCheersFull = function(data) {
-            const container = document.getElementById('all-cheers-list');
-            if (data.length === 0) {
-                container.innerHTML = `<p class="text-center py-20 text-slate-400 font-bold">첫 번째 응원의 주인공이 되어주세요! ✨</p>`;
-                return;
-            }
-            let html = '';
-            data.forEach((item) => {
-                const dateStr = item.createdAt && item.createdAt.seconds 
-                    ? new Date(item.createdAt.seconds * 1000).toLocaleDateString() : '방금 전';
-                html += `
-                    <div class="p-5 bg-slate-50/50 backdrop-blur-sm border border-slate-200/50 rounded-2xl mb-3">
-                        <p class="text-slate-800 font-bold leading-relaxed">"${item.text}"</p>
-                        <div class="flex justify-between items-center mt-3 pt-3 border-t border-slate-200/50">
-                            <span class="text-[10px] text-brand font-black uppercase tracking-widest">${item.writer || "익명의 황지인"}</span>
-                            <span class="text-[9px] text-slate-400">${dateStr}</span>
-                        </div>
-                    </div>`;
-            });
-            container.innerHTML = html;
-        };
-
-        // 데이터가 없을 때 띄워줄 기본 가짜 데이터
-        window.renderFallback = function() {
-            const defaults = [
-                { text: "분리수거는 습관! 깨끗한 황지중학교를 만들어요", writer: "봉사부", createdAt: {seconds: 1} },
-                { text: "우리 반의 단합력을 보여줄 시간! 모두 함께해요", writer: "학생회", createdAt: {seconds: 1} }
-            ];
-            window.renderCheersMain(defaults);
-            window.renderCheersFull(defaults);
-        };
-
-        // 시작 시 기본 화면 깔아두기
-        window.renderFallback();
-
-        // 인증 상태 감지 및 실시간 데이터베이스 연결
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                const q = collection(db, 'artifacts', appId, 'public', 'data', 'cheers');
-                
-                // 데이터베이스 실시간 감시 (전교생 동기화)
-                onSnapshot(q, (snapshot) => {
-                    let cheers = [];
-                    snapshot.forEach((doc) => cheers.push({ id: doc.id, ...doc.data() }));
-                    
-                    // 최신순 정렬
-                    cheers.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                    
-                    if (cheers.length > 0) {
-                        window.renderCheersMain(cheers.slice(0, 3));
-                        window.renderCheersFull(cheers);
-                    } else {
-                        window.renderFallback();
-                    }
-                }, (error) => {
-                    console.error("데이터 실시간 동기화 오류:", error);
-                });
-            }
-        });
-
-        initAuth();
-
-        // 💡 응원 보내기 함수 (데이터베이스에 쓰기)
-        window.submitCheer = async function() {
-            const msgInput = document.getElementById('cheerInput');
-            const writerInput = document.getElementById('cheerWriter');
-            const msg = msgInput.value.trim();
-            const writer = writerInput.value.trim();
-            
-            if (!msg) { 
-                showToast("메시지를 입력해 주세요! ✍️"); 
-                return; 
-            }
-
-            if (!currentUser) {
-                showToast("서버 연결 중입니다. 잠시 후 다시 시도해주세요. ⏳");
-                return;
-            }
-            
-            try {
-                // 파이어베이스 클라우드에 전송
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'cheers'), {
-                    text: msg, 
-                    writer: writer || "익명의 황지인", 
-                    createdAt: serverTimestamp()
-                });
-                
-                msgInput.value = ''; writerInput.value = '';
-                closeModal('cheerModal');
-                showToast("응원 메시지가 전체 공유되었습니다! 🚀");
-            } catch (e) { 
-                console.error("전송 오류:", e); 
-                showToast("전송에 실패했습니다. DB 설정을 확인해주세요."); 
-            }
-        };
     </script>
 
     <!-- Tailwind CSS -->
@@ -198,7 +39,11 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
         html { -webkit-overflow-scrolling: touch; }
-        body { background-color: #f8fafc; color: #1e293b; overflow-x: hidden; min-height: 100dvh; }
+        body { background-color: #f8fafc; color: #1e293b; overflow-x: hidden; min-height: 100dvh; font-weight: 500; }
+        h1, h2, h3, h4, h5 { font-weight: 900; letter-spacing: -0.03em; }
+        p { word-break: keep-all; }
+        button { font-weight: 800; }
+        nav a, footer a { text-decoration: none; }
         
         .glass-card {
             background: rgba(255, 255, 255, 0.75);
@@ -230,7 +75,7 @@
         @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 100% { transform: translate(40px, 60px) scale(1.1); } }
     </style>
 </head>
-<body class="antialiased font-sans pt-16 md:pt-20 font-black relative min-h-screen">
+<body class="antialiased font-sans pt-16 md:pt-20 relative min-h-screen">
 
     <div class="bg-blob-1"></div>
     <div class="bg-blob-2"></div>
@@ -240,17 +85,17 @@
     <div id="toast"></div>
 
     <!-- 플로팅 버튼 (모바일 호환) -->
-    <div class="fixed bottom-6 right-4 md:right-6 z-[50] flex flex-col gap-3 items-end">
-        <button onclick="copyCurrentUrl()" class="glass-card px-4 py-3 md:px-5 md:py-3 rounded-full flex items-center justify-center text-slate-700 hover:text-brand transition-all shadow-lg font-black text-sm gap-2 active:scale-95 border border-white">
+    <div class="fixed bottom-5 right-4 md:right-6 z-[50] flex flex-col gap-2.5 items-end">
+        <button onclick="copyCurrentUrl()" class="glass-card px-4 py-3 md:px-5 md:py-3 rounded-full flex items-center justify-center text-slate-700 hover:text-brand transition-all shadow-md font-black text-sm gap-2 active:scale-95 border border-white/80">
             <span class="text-base">🔗</span> <span class="tracking-wide">링크복사</span>
         </button>
-        <button onclick="scrollToTop()" class="bg-brand text-white px-4 py-3 md:px-5 md:py-3 rounded-full flex items-center justify-center hover:bg-brand-dark transition-all shadow-lg font-black text-sm gap-2 active:scale-95 border border-brand">
+        <button onclick="scrollToTop()" class="bg-brand text-white px-4 py-3 md:px-5 md:py-3 rounded-full flex items-center justify-center hover:bg-brand-dark transition-all shadow-md font-black text-sm gap-2 active:scale-95 border border-brand/80">
             <span class="text-base">🚀</span> <span class="tracking-wide">맨위로</span>
         </button>
     </div>
 
     <!-- 네비게이션 -->
-    <nav class="fixed w-full z-40 top-0 bg-white/70 backdrop-blur-xl border-b border-white/50">
+    <nav class="fixed w-full z-40 top-0 bg-white/80 backdrop-blur-xl border-b border-white/60 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 md:h-20">
                 <div class="flex items-center cursor-pointer group" onclick="scrollToTop()"><span class="font-black text-slate-900 text-xl md:text-2xl tracking-tighter transition-colors group-hover:text-brand">학생회 봉사부</span></div>
@@ -272,12 +117,12 @@
     <!-- 히어로 -->
     <header class="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32 px-4 z-10">
         <div class="max-w-7xl mx-auto text-center md:text-left">
-            <div class="inline-block px-5 py-2 glass-card text-brand text-[10px] font-black tracking-[0.3em] uppercase rounded-full mb-6 md:mb-8 md:ml-12 lg:ml-20">Hwangji Volunteer Club</div>
+            <div class="inline-block px-5 py-2 glass-card text-brand text-[10px] font-black tracking-[0.3em] uppercase rounded-full mb-6 md:mb-8 md:ml-12 lg:ml-20 shadow-sm">Hwangji Volunteer Club</div>
             <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[1.1] tracking-tighter mb-8 md:mb-10 md:ml-12 lg:ml-20">작은 실천,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand via-emerald-500 to-teal-400">따뜻한 변화.</span></h1>
             <p class="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto md:mx-0 mb-10 md:mb-12 leading-relaxed md:ml-12 lg:ml-20">봉사활동이 처음인가요? 황지중학교 학생들을 위한<br class="hidden md:block">가장 쉽고 똑똑한 봉사 가이드를 만나보세요.</p>
             <div class="flex flex-col sm:flex-row justify-center md:justify-start md:ml-12 lg:ml-20 gap-4 px-4 sm:px-0">
                 <a href="#guide" class="px-8 py-4 md:px-10 md:py-5 bg-slate-900 text-white rounded-2xl md:rounded-3xl text-lg shadow-xl hover:shadow-2xl hover:bg-brand hover:-translate-y-1 active:scale-95 transition-all text-center">활동 가이드 보기</a>
-                <button onclick="openModal('plasticModal')" class="px-8 py-4 md:px-10 md:py-5 glass-card rounded-2xl md:rounded-3xl text-lg hover:bg-white hover:-translate-y-1 active:scale-95 transition-all text-center">플라스틱 대항전 ♻️</button>
+                <button onclick="openModal('plasticModal')" class="px-8 py-4 md:px-10 md:py-5 glass-card rounded-2xl md:rounded-3xl text-lg hover:bg-white hover:-translate-y-1 active:scale-95 transition-all text-center border border-white/80 shadow-sm">플라스틱 대항전 ♻️</button>
             </div>
         </div>
     </header>
@@ -311,7 +156,7 @@
 
         <!-- 2. 대항전 배너 -->
         <section id="events" class="scroll-mt-24 md:scroll-mt-32 px-2 md:px-0 text-white">
-            <div class="relative p-8 md:p-20 dark-glass-card rounded-[3rem] md:rounded-[4rem] overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]" onclick="openModal('plasticModal')">
+            <div class="relative p-8 md:p-20 dark-glass-card rounded-[3rem] md:rounded-[4rem] overflow-hidden group cursor-pointer transition-transform active:scale-[0.98] border border-emerald-400/10" onclick="openModal('plasticModal')">
                 <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-brand/20 to-transparent opacity-50 transition-transform duration-700 md:group-hover:scale-110"></div>
                 <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 md:gap-12 text-center md:text-left">
                     <div class="flex-grow">
@@ -321,7 +166,7 @@
                         </div>
                         <h2 class="text-3xl md:text-6xl mb-6 md:mb-8 leading-tight tracking-tighter">반별 플라스틱<br>모으기 대항전 ♻️</h2>
                         <p class="text-lg md:text-xl text-slate-300 leading-relaxed mb-8 md:mb-10 max-w-xl mx-auto md:mx-0 font-bold">작은 실천으로 우리 반의 단합력을 보여주세요!<br>누적 1위 학급에게는 맛있는 간식 박스가 찾아갑니다.</p>
-                        <div class="flex items-center justify-center md:justify-start gap-3"><div class="px-6 py-3 bg-brand text-white rounded-2xl text-base md:text-lg shadow-lg hover:shadow-brand/50 transition-shadow">상세 규칙 및 랭킹 보기</div></div>
+                        <div class="flex items-center justify-center md:justify-start gap-3"><div class="px-6 py-3 bg-brand text-white rounded-2xl text-base md:text-lg shadow-lg hover:shadow-brand/50 transition-shadow ring-1 ring-white/10">상세 규칙 및 랭킹 보기</div></div>
                     </div>
                     <div class="w-40 h-40 md:w-64 md:h-64 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] md:rounded-[3rem] border border-white/10 flex items-center justify-center transform rotate-6 transition-transform md:group-hover:rotate-0 mx-auto md:mx-0 shadow-2xl">
                         <div class="text-[5rem] md:text-[6rem] drop-shadow-2xl">🏆</div>
@@ -330,26 +175,45 @@
             </div>
         </section>
 
-        <!-- 3. 함께하는 황지인 -->
-        <section class="max-w-7xl mx-auto px-2 md:px-0">
-            <div class="flex justify-between items-end mb-8 md:mb-10 px-2 md:px-0 text-slate-900">
-                <h2 class="text-3xl md:text-4xl tracking-tighter">함께하는 황지인</h2>
-                <button onclick="openModal('allCheersModal')" class="text-slate-400 text-[10px] uppercase tracking-[0.2em] hover:text-brand transition-colors glass-card px-4 py-2 rounded-full active:scale-95">전체보기 View All +</button>
-            </div>
-            
-            <div id="cheer-wall-container" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- 자바스크립트로 렌더링됨 -->
-            </div>
-        </section>
+        <!-- 3. FAQ -->
+        <section id="faq" class="max-w-5xl mx-auto px-2 md:px-0">
+            <div class="relative overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] border border-white/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 shadow-[0_20px_60px_-20px_rgba(16,185,129,0.22)]">
+                <div class="absolute -top-16 -right-16 w-48 h-48 bg-emerald-200/40 blur-3xl rounded-full"></div>
+                <div class="absolute -bottom-20 -left-10 w-56 h-56 bg-teal-100/50 blur-3xl rounded-full"></div>
+                <div class="relative p-8 md:p-12 lg:p-14 text-slate-900">
+                    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+                        <div>
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-emerald-100 text-emerald-700 text-[10px] tracking-[0.25em] uppercase shadow-sm">Q&A Guide</span>
+                            <h3 class="mt-5 text-3xl md:text-4xl lg:text-5xl tracking-tighter leading-tight">궁금한 게 있어요</h3>
+                            <p class="mt-3 text-slate-500 text-sm md:text-base font-bold leading-relaxed">봉사활동을 하면서 많이 묻는 질문을 한눈에 보기 쉽게 정리했어요.</p>
+                        </div>
+                        <div class="glass-card px-5 py-4 rounded-2xl text-sm font-black text-slate-600 w-full md:w-auto">
+                            자주 묻는 질문을 눌러서 바로 확인하세요.
+                        </div>
+                    </div>
 
-        <!-- 4. FAQ -->
-        <section id="faq" class="max-w-4xl mx-auto px-4 md:px-0">
-            <div class="p-8 md:p-12 glass-card rounded-[2.5rem] text-slate-900">
-                <div class="flex items-center justify-between mb-8"><h3 class="text-2xl flex items-center gap-3"><i class="fas fa-comment-dots text-brand"></i> 궁금한 게 있어요</h3><span class="text-[10px] text-slate-400 uppercase tracking-widest">FAQ</span></div>
-                <div class="space-y-6">
-                    <div class="group cursor-pointer bg-white/50 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/60 transition-all hover:border-brand/30 hover:shadow-lg" onclick="toggleFaq(this)">
-                        <div class="flex justify-between items-center mb-4"><span class="text-slate-800 text-lg md:text-xl leading-tight">학교 외 봉사도 인정되나요?</span><div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-300 group-hover:text-brand transition-colors"><i class="fas fa-chevron-down transition-transform"></i></div></div>
-                        <p class="text-base md:text-lg text-slate-600 hidden leading-relaxed font-bold">개인적 외부 봉사는 반드시 사전에 담임 선생님의 승인을 받아야 하며, '1365 자원봉사포털' 등록 활동이어야 생활기록부 입력이 가능합니다. 꼭 확인해 주세요!</p>
+                    <div class="space-y-4">
+                        <div class="group cursor-pointer bg-white/80 backdrop-blur-md p-6 md:p-7 rounded-[2rem] border border-emerald-100/80 transition-all hover:border-emerald-300 hover:shadow-lg hover:-translate-y-1" onclick="toggleFaq(this)">
+                            <div class="flex justify-between items-center gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-emerald-500 mb-2 font-black">Question 01</span>
+                                    <span class="text-slate-900 text-lg md:text-xl leading-tight">학교 외 봉사도 인정되나요?</span>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shadow-sm text-emerald-500 transition-all group-hover:bg-emerald-500 group-hover:text-white shrink-0"><i class="fas fa-chevron-down transition-transform"></i></div>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-600 hidden leading-relaxed font-bold mt-5 pt-5 border-t border-slate-100">개인적 외부 봉사는 반드시 사전에 담임 선생님의 승인을 받아야 하며, '1365 자원봉사포털' 등록 활동이어야 생활기록부 입력이 가능합니다. 꼭 확인해 주세요!</p>
+                        </div>
+
+                        <div class="group cursor-pointer bg-white/80 backdrop-blur-md p-6 md:p-7 rounded-[2rem] border border-emerald-100/80 transition-all hover:border-emerald-300 hover:shadow-lg hover:-translate-y-1" onclick="toggleFaq(this)">
+                            <div class="flex justify-between items-center gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-emerald-500 mb-2 font-black">Question 02</span>
+                                    <span class="text-slate-900 text-lg md:text-xl leading-tight">봉사 시간은 어떻게 기록되나요?</span>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shadow-sm text-emerald-500 transition-all group-hover:bg-emerald-500 group-hover:text-white shrink-0"><i class="fas fa-chevron-down transition-transform"></i></div>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-600 hidden leading-relaxed font-bold mt-5 pt-5 border-t border-slate-100">학교 안내에 따라 활동한 뒤, 필요한 경우 1365 등록과 나이스 연동 여부를 꼭 확인해야 합니다. 인정 방식은 학교와 담당 선생님 안내를 우선으로 확인해 주세요.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -373,7 +237,7 @@
                 <div class="md:col-span-3 space-y-6 md:space-y-8"><h5 class="text-[10px] text-slate-400 uppercase tracking-widest font-black">Quick Links</h5><ul class="space-y-4 text-sm md:text-base font-bold"><li><a href="https://www.1365.go.kr/" target="_blank" class="hover:text-brand transition-colors">1365 자원봉사포털</a></li><li><a href="https://neis.go.kr/" target="_blank" class="hover:text-brand transition-colors">나이스(NEIS) 연동</a></li><li><a href="https://hwangji.gwe.ms.kr/main.do" target="_blank" class="hover:text-brand transition-colors text-xs opacity-50">학교 홈페이지</a></li></ul></div>
                 <div class="md:col-span-4">
                     <h5 class="text-[10px] text-slate-400 uppercase tracking-widest mb-6 md:mb-8 text-center md:text-left font-black">Contact Support</h5>
-                    <div class="glass-card p-8 rounded-[2rem] md:rounded-[2.5rem] space-y-6 text-left">
+                    <div class="glass-card p-8 rounded-[2rem] md:rounded-[2.5rem] space-y-6 text-left border border-white/70 shadow-lg">
                         <div class="flex items-center gap-5">
                             <div class="w-14 h-14 bg-brand text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-lg">👩‍💻</div>
                             <div>
@@ -399,40 +263,6 @@
         </div>
     </footer>
 
-    <!-- 모달: 전체 응원 -->
-    <div id="allCheersModal" class="fixed inset-0 z-[60] hidden overflow-y-auto text-slate-900">
-        <div class="flex items-center justify-center min-h-screen p-4 md:p-6">
-            <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity" onclick="closeModal('allCheersModal')"></div>
-            <div class="glass-card rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-14 max-w-2xl w-full relative z-10 shadow-2xl bg-white/95">
-                <div class="flex justify-between items-center mb-10">
-                    <h3 class="text-3xl font-black tracking-tighter">전교생 응원 보드 📢</h3>
-                    <button onclick="closeModal('allCheersModal')" class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors"><i class="fas fa-times"></i></button>
-                </div>
-                <div id="all-cheers-list" class="max-h-[60vh] overflow-y-auto pr-2 space-y-4 scroll-smooth"></div>
-                <button onclick="closeModal('allCheersModal'); setTimeout(() => openModal('cheerModal'), 300)" class="w-full mt-10 py-5 bg-brand text-white font-black rounded-2xl shadow-xl hover:bg-brand-dark transition-all transform active:scale-95">나도 한마디 남기기 ✍️</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 모달: 응원 입력 -->
-    <div id="cheerModal" class="fixed inset-0 z-[60] hidden overflow-y-auto text-slate-900">
-        <div class="flex items-center justify-center min-h-screen p-4 md:p-6">
-            <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity" onclick="closeModal('cheerModal')"></div>
-            <div class="glass-card rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-14 max-w-lg w-full relative z-10 shadow-2xl bg-white/95">
-                <div class="text-center mb-10">
-                    <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-light flex items-center justify-center text-3xl mb-6 shadow-inner">💌</div>
-                    <h3 class="text-3xl font-black tracking-tighter">응원 한마디 남기기</h3>
-                    <p class="text-slate-500 font-bold mt-2 text-sm">친구들과 봉사부에 따뜻한 힘을 주세요!</p>
-                </div>
-                <div class="space-y-6">
-                    <div><label class="block text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Your Message</label><textarea id="cheerInput" placeholder="이곳에 응원 메시지를 입력하세요 (최대 50자)" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 font-bold focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all text-sm resize-none"></textarea></div>
-                    <div><label class="block text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Writer (Optional)</label><input type="text" id="cheerWriter" placeholder="예: 3학년 1반 OOO" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 font-bold focus:outline-none focus:border-brand transition-all text-sm"></div>
-                </div>
-                <div class="mt-12 flex gap-4"><button onclick="closeModal('cheerModal')" class="flex-1 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-all active:scale-95">취소</button><button onclick="submitCheer()" class="flex-2 px-10 py-4 bg-brand text-white font-black rounded-2xl shadow-xl hover:bg-brand-dark transition-all transform active:scale-95">응원 보내기 🚀</button></div>
-            </div>
-        </div>
-    </div>
-
     <!-- 모달: 가이드북 -->
     <div id="tipsModal" class="fixed inset-0 z-[60] hidden overflow-y-auto text-slate-900">
         <div class="flex items-center justify-center min-h-screen p-4 md:p-6">
@@ -442,7 +272,7 @@
                 <h3 class="text-3xl font-black mb-8 text-center">봉사 성공 가이드</h3>
                 <div class="space-y-4 text-sm md:text-base leading-relaxed font-bold text-slate-700">
                     <p class="bg-slate-50 p-6 rounded-2xl border border-slate-200/50">1. 1365 가입 시 소속 센터는 '강원도 태백시', 학교는 '황지중학교'로 설정해 주세요.</p>
-                    <p class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-blue-700">2. 외부 봉사보다 점수 따기 쉽고 안전한 '교내 봉사'를 적극 노리세요!</p>
+                    <p class="bg-blue-50 p-6 rounded-2xl border border-brand/20 text-brand-dark">2. 외부 봉사보다 점수 따기 쉽고 안전한 '교내 봉사'를 적극 노리세요!</p>
                     <p class="bg-rose-50 p-6 rounded-2xl border border-rose-100 text-rose-600">3. 활동 후 '나이스 실적 전송' 버튼을 꼭 눌러야 생기부에 기록됩니다.</p>
                 </div>
                 <button class="w-full mt-10 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95" onclick="closeModal('tipsModal')">확인했습니다 👌</button>
@@ -456,7 +286,7 @@
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md" onclick="closeModal('plasticModal')"></div>
             <div class="glass-card rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-10 max-w-4xl w-full relative z-10 shadow-2xl bg-white/95">
                 <div class="flex flex-col items-center max-h-[85vh] overflow-y-auto pr-2 scroll-smooth">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl md:text-4xl mb-8 shadow-inner shrink-0">♻️</div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-brand-light flex items-center justify-center text-3xl md:text-4xl mb-8 shadow-inner shrink-0">♻️</div>
                     <h3 class="text-2xl md:text-5xl font-black mb-6 tracking-tighter">반별 플라스틱 대항전</h3>
                     <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 font-bold text-slate-700">
                         <div class="space-y-6">
@@ -477,7 +307,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="w-full mt-10 py-5 bg-indigo-600 font-black text-white rounded-3xl shadow-xl hover:bg-indigo-700 transition-all active:scale-95" onclick="closeModal('plasticModal')">규칙 확인 완료!</button>
+                <button class="w-full mt-10 py-5 bg-brand font-black text-white rounded-3xl shadow-xl hover:bg-brand-dark transition-all active:scale-95" onclick="closeModal('plasticModal')">규칙 확인 완료!</button>
             </div>
         </div>
     </div>
@@ -556,7 +386,7 @@
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleFaq(el) { const p = el.querySelector('p'); const icon = el.querySelector('i'); p.classList.toggle('hidden'); icon.style.transform = p.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+        function toggleFaq(el) { const p = el.querySelector('p'); const icon = el.querySelector('i'); p.classList.toggle('hidden'); icon.style.transform = p.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; el.classList.toggle('shadow-xl'); }
         function showToast(msg) { const toast = document.getElementById("toast"); toast.innerText = msg; toast.className = "show"; setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000); }
         
         window.onscroll = function() { let winScroll = document.body.scrollTop || document.documentElement.scrollTop; let height = document.documentElement.scrollHeight - document.documentElement.clientHeight; let scrolled = (winScroll / height) * 100; document.getElementById("scroll-progress").style.width = scrolled + "%"; };
