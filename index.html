@@ -26,8 +26,18 @@
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // 전역 상태
-        window.localCheers = []; // 깃허브 배포 등 오프라인 환경을 위한 로컬 데이터
+        window.localCheers = []; 
         window.isDbConnected = false;
+
+        // 1. 폰 자체 저장소에서 기존에 썼던 데이터 불러오기 (초기화 방지)
+        try {
+            const savedCheers = window.localStorage.getItem('hjms_cheers_v2');
+            if (savedCheers) {
+                window.localCheers = JSON.parse(savedCheers);
+            }
+        } catch (e) {
+            console.warn("로컬 저장소를 사용할 수 없습니다.");
+        }
 
         // 렌더링 함수 전역 노출
         window.renderCheersMain = function(data) {
@@ -77,6 +87,19 @@
             container.innerHTML = html;
         };
 
+        // 2. 초기 폴백 렌더링
+        window.renderFallback = function() {
+            const defaults = [
+                { text: "분리수거는 습관! 깨끗한 황지중학교를 만들어요", writer: "봉사부", createdAt: {seconds: 1} },
+                { text: "우리 반의 단합력을 보여줄 시간! 모두 함께해요", writer: "학생회", createdAt: {seconds: 1} }
+            ];
+            const mergedData = [...window.localCheers, ...defaults];
+            window.renderCheersMain(mergedData.slice(0, 3));
+            window.renderCheersFull(mergedData);
+        };
+        
+        window.renderFallback();
+
         // 데이터베이스 전송 함수
         window.submitCheer = async function() {
             const msgInput = document.getElementById('cheerInput');
@@ -96,22 +119,13 @@
                 }
             } catch (e) { 
                 console.warn("로컬 모드로 응원 등록을 진행합니다.");
-                // DB가 없는 깃허브 페이지 환경에서는 사용자의 화면에만 추가 (끊김 방지)
                 window.localCheers.unshift({
                     text: msg, 
                     writer: writer || "익명의 황지인", 
                     createdAt: { seconds: Math.floor(Date.now() / 1000) }
                 });
-                
-                // 기본 데이터 3개 유지
-                const defaults = [
-                    { text: "분리수거는 습관! 깨끗한 황지중학교를 만들어요", writer: "봉사부", createdAt: {seconds: 1} },
-                    { text: "우리 반의 단합력을 보여줄 시간! 모두 함께해요", writer: "학생회", createdAt: {seconds: 1} }
-                ];
-                
-                const mergedData = [...window.localCheers, ...defaults];
-                window.renderCheersMain(mergedData.slice(0, 3));
-                window.renderCheersFull(mergedData);
+                try { window.localStorage.setItem('hjms_cheers_v2', JSON.stringify(window.localCheers)); } catch(err) {}
+                window.renderFallback();
             }
             
             msgInput.value = ''; writerInput.value = '';
@@ -219,10 +233,14 @@
     <div id="scroll-progress"></div>
     <div id="toast"></div>
 
-    <!-- 플로팅 버튼 -->
-    <div class="fixed bottom-6 right-6 z-[40] flex flex-col gap-3">
-        <button onclick="copyCurrentUrl()" class="w-12 h-12 glass-card rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all"><i class="fas fa-share-alt"></i></button>
-        <button onclick="window.scrollTo(0,0)" class="w-12 h-12 bg-brand text-white shadow-lg rounded-full flex items-center justify-center hover:scale-110 transition-all"><i class="fas fa-arrow-up"></i></button>
+    <!-- 💡 수정된 플로팅 버튼 (이모지 및 텍스트 포함 캡슐 형태) -->
+    <div class="fixed bottom-6 right-6 z-[40] flex flex-col gap-3 items-end">
+        <button onclick="copyCurrentUrl()" class="glass-card px-5 py-3 rounded-full flex items-center justify-center text-slate-700 hover:text-brand transition-all shadow-lg font-black text-sm gap-2 hover:scale-105 border border-white">
+            <span>🔗 링크복사</span>
+        </button>
+        <button onclick="window.scrollTo(0,0)" class="bg-brand text-white px-5 py-3 rounded-full flex items-center justify-center hover:bg-brand-dark transition-all shadow-lg font-black text-sm gap-2 hover:scale-105 border border-brand">
+            <span>🚀 맨위로</span>
+        </button>
     </div>
 
     <!-- 네비게이션 -->
@@ -307,7 +325,7 @@
             </div>
         </section>
 
-        <!-- 3. 함께하는 황지인 (💡 고정 HTML을 삽입하여 로딩 전에도 모바일 화면 100% 보장) -->
+        <!-- 3. 함께하는 황지인 -->
         <section class="max-w-7xl mx-auto px-2 md:px-0">
             <div class="flex justify-between items-end mb-8 md:mb-10 px-2 md:px-0 text-slate-900">
                 <h2 class="text-3xl md:text-4xl tracking-tighter">함께하는 황지인</h2>
@@ -315,25 +333,7 @@
             </div>
             
             <div id="cheer-wall-container" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- 서버 지연 시 즉시 보이는 기본 카드 세트 -->
-                <div class="p-6 bg-blue-50/70 border-blue-200/50 text-blue-600 backdrop-blur-md border rounded-3xl shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg font-black flex flex-col justify-between h-32 relative overflow-hidden group">
-                    <div class="absolute -right-2 -bottom-2 text-5xl opacity-10 group-hover:scale-125 transition-transform">💬</div>
-                    <p class="line-clamp-2 text-sm relative z-10">"분리수거는 습관! 깨끗한 황지중학교를 만들어요"</p>
-                    <span class="block text-[10px] mt-2 opacity-60 text-right font-bold relative z-10">- 봉사부</span>
-                </div>
-                <div class="p-6 bg-brand-light/70 border-brand/20 text-brand-dark backdrop-blur-md border rounded-3xl shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg font-black flex flex-col justify-between h-32 relative overflow-hidden group">
-                    <div class="absolute -right-2 -bottom-2 text-5xl opacity-10 group-hover:scale-125 transition-transform">✨</div>
-                    <p class="line-clamp-2 text-sm relative z-10">"우리 반의 단합력을 보여줄 시간! 모두 함께해요"</p>
-                    <span class="block text-[10px] mt-2 opacity-60 text-right font-bold relative z-10">- 학생회</span>
-                </div>
-                <div class="p-6 bg-yellow-50/70 border-yellow-200/50 text-yellow-600 backdrop-blur-md border rounded-3xl shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg font-black flex flex-col justify-between h-32 relative overflow-hidden group">
-                    <div class="absolute -right-2 -bottom-2 text-5xl opacity-10 group-hover:scale-125 transition-transform">💛</div>
-                    <p class="line-clamp-2 text-sm relative z-10">"작은 실천이 큰 변화를 만듭니다! 화이팅"</p>
-                    <span class="block text-[10px] mt-2 opacity-60 text-right font-bold relative z-10">- 응원봇</span>
-                </div>
-                <button onclick="openModal('cheerModal')" class="glass-card p-6 rounded-3xl text-slate-400 font-black hover:border-brand hover:text-brand transition-all flex items-center justify-center gap-2 h-32 w-full border-2 border-dashed border-slate-300/50">
-                    <i class="fas fa-plus-circle"></i> 응원 남기기 ✍️
-                </button>
+                <!-- 데이터 로딩 전 & 로컬 모드용 더미 컨테이너 -->
             </div>
         </section>
 
@@ -370,7 +370,6 @@
                     <h5 class="text-[10px] text-slate-400 uppercase tracking-widest mb-6 md:mb-8 text-center md:text-left font-black">Contact Support</h5>
                     <div class="glass-card p-8 rounded-[2rem] md:rounded-[2.5rem] space-y-6 text-left">
                         <div class="flex items-center gap-5">
-                            <!-- 부장 이모지 박스 -->
                             <div class="w-14 h-14 bg-brand text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-lg">👩‍💻</div>
                             <div>
                                 <span class="block text-[9px] text-slate-400 uppercase tracking-widest mb-1 font-bold">Leader & Admin</span>
@@ -378,7 +377,6 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-5 opacity-70">
-                            <!-- 차장 이모지 박스 -->
                             <div class="w-14 h-14 bg-slate-200/50 text-slate-500 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-sm">🙋‍♀️</div>
                             <div>
                                 <span class="block text-[9px] text-slate-400 uppercase tracking-widest mb-1 font-bold">Vice Leader</span>
