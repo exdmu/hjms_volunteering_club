@@ -146,9 +146,9 @@
                         <p class="text-slate-400 text-xs uppercase tracking-wider font-bold">Roadmap &rarr;</p>
                     </div>
                     <div class="p-6 md:p-8 glass-card rounded-[2rem] md:rounded-[2.5rem] hover-lift cursor-pointer" onclick="openModal('pendingCriteriaModal')">
-                        <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-inner">✅</div>
-                        <h3 class="text-lg md:text-xl mb-1">인정 기준</h3>
-                        <p class="text-slate-400 text-xs uppercase tracking-wider font-bold">Criteria &rarr;</p>
+                        <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-inner">📋</div>
+                        <h3 class="text-lg md:text-xl mb-1">교내봉사 실적 정보</h3>
+                        <p class="text-slate-400 text-xs uppercase tracking-wider font-bold">School Volunteer Info &rarr;</p>
                     </div>
                 </div>
             </div>
@@ -321,7 +321,7 @@
                 <h3 class="text-3xl font-black mb-10 text-center">3월 활동 일정표</h3>
                 <div class="space-y-6 font-bold">
                     <div class="p-6 rounded-2xl border-2 border-brand/20 bg-brand-light/30 flex justify-between items-center cursor-pointer hover:bg-brand-light/50 transition-colors" onclick="closeModal('scheduleListModal'); setTimeout(() => openModal('plasticModal'), 300)">
-                        <div><h4 class="text-brand-dark font-black">플라스틱 대항전 ♻️</h4><p class="text-xs opacity-60">03.25 - 04.01</p></div>
+                        <div><h4 class="text-brand-dark font-black">플라스틱 대항전 ♻️</h4><p class="text-xs opacity-60">03.26 - 04.03</p></div>
                         <span class="bg-brand text-white font-black px-3 py-1 rounded-full text-[10px]">진행예정</span>
                     </div>
                     <div class="p-6 rounded-2xl border border-slate-200/50 bg-slate-50 flex justify-between items-center opacity-60">
@@ -335,13 +335,117 @@
     </div>
 
     <div id="pendingCriteriaModal" class="fixed inset-0 z-[60] hidden overflow-y-auto text-slate-900">
-        <div class="flex items-center justify-center min-h-screen p-6 text-center">
+        <div class="flex items-center justify-center min-h-screen p-4 md:p-6 text-center">
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md" onclick="closeModal('pendingCriteriaModal')"></div>
-            <div class="glass-card rounded-[2.5rem] p-12 max-w-xl w-full relative z-10 bg-white/95">
-                <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl md:rounded-[1.5rem] bg-yellow-50 flex items-center justify-center text-2xl md:text-3xl mb-8 md:mb-10 shadow-inner shrink-0">📝</div>
-                <h3 class="text-3xl font-black mb-6">인정 기준 검토 중</h3>
-                <p class="text-slate-600 mb-10 leading-relaxed font-bold">현재 선생님과 정확한 인정 기준표를 최종 확인하고 있습니다. 확정 즉시 공지하겠습니다.</p>
-                <button class="w-full py-4 bg-slate-900 font-black text-white rounded-2xl shadow-xl hover:bg-slate-800 transition-colors active:scale-95" onclick="closeModal('pendingCriteriaModal')">확인했습니다</button>
+            <div class="glass-card rounded-[2.5rem] md:rounded-[3.2rem] p-8 md:p-10 max-w-4xl w-full relative z-10 bg-white/95 shadow-2xl">
+                <div class="max-h-[82vh] overflow-y-auto pr-1">
+                    <div class="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-[1.5rem] bg-yellow-50 flex items-center justify-center text-3xl md:text-4xl mb-8 shadow-inner shrink-0">📋</div>
+                    <h3 class="text-3xl md:text-4xl font-black mb-3 tracking-tighter">교내봉사 실적 정보</h3>
+                    <p class="text-slate-500 mb-8 md:mb-10 leading-relaxed font-bold">교내에서 참여할 수 있는 대표 봉사활동과 최대 인정 시간을 보기 쉽게 정리했습니다.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                        <div class="bg-gradient-to-br from-yellow-50 to-white border border-yellow-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-yellow-500 font-black mb-2">Volunteer 01</span>
+                                    <h4 class="text-xl font-black text-slate-900">에너지 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-yellow-400 text-white text-sm font-black shadow-sm">최대 5시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-emerald-500 font-black mb-2">Volunteer 02</span>
+                                    <h4 class="text-xl font-black text-slate-900">휴대폰 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-emerald-500 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-sky-50 to-white border border-sky-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-sky-500 font-black mb-2">Volunteer 03</span>
+                                    <h4 class="text-xl font-black text-slate-900">정보 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-sky-500 text-white text-sm font-black shadow-sm">최대 5시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-rose-50 to-white border border-rose-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-rose-500 font-black mb-2">Volunteer 04</span>
+                                    <h4 class="text-xl font-black text-slate-900">우유급식 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-rose-500 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-violet-50 to-white border border-violet-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-violet-500 font-black mb-2">Volunteer 05</span>
+                                    <h4 class="text-xl font-black text-slate-900">학교행사 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-violet-500 text-white text-sm font-black shadow-sm">최대 5시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-amber-50 to-white border border-amber-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-amber-500 font-black mb-2">Volunteer 06</span>
+                                    <h4 class="text-xl font-black text-slate-900">도서 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-teal-50 to-white border border-teal-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-teal-500 font-black mb-2">Volunteer 07</span>
+                                    <h4 class="text-xl font-black text-slate-900">체육 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-teal-500 text-white text-sm font-black shadow-sm">최대 5시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-indigo-500 font-black mb-2">Volunteer 08</span>
+                                    <h4 class="text-xl font-black text-slate-900">방송 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-indigo-500 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-lime-50 to-white border border-lime-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-lime-600 font-black mb-2">Volunteer 09</span>
+                                    <h4 class="text-xl font-black text-slate-900">급식 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-lime-600 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-pink-50 to-white border border-pink-100 rounded-[1.8rem] p-5 shadow-sm">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-[0.25em] text-pink-500 font-black mb-2">Volunteer 10</span>
+                                    <h4 class="text-xl font-black text-slate-900">건강 도우미</h4>
+                                </div>
+                                <span class="px-4 py-2 rounded-full bg-pink-500 text-white text-sm font-black shadow-sm">최대 10시간</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full mt-8 py-4 bg-slate-900 font-black text-white rounded-2xl shadow-xl hover:bg-slate-800 transition-colors active:scale-95" onclick="closeModal('pendingCriteriaModal')">확인했습니다</button>
             </div>
         </div>
     </div>
@@ -352,7 +456,7 @@
             <div class="glass-card rounded-[2.5rem] p-12 max-w-xl w-full relative z-10 bg-white/95">
                 <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl md:rounded-[1.5rem] bg-pink-50 flex items-center justify-center text-2xl md:text-3xl mb-8 md:mb-10 shadow-inner shrink-0">📸</div>
                 <h3 class="text-3xl font-black mb-6">기록을 준비하고 있어요</h3>
-                <p class="text-slate-600 mb-10 leading-relaxed font-bold">3월 25일 대항전이 시작되면 첫 번째 활동 사진이 이곳에 채워집니다! 조금만 기다려주세요.</p>
+                <p class="text-slate-600 mb-10 leading-relaxed font-bold">3월 26일 대항전이 시작되면 첫 번째 활동 사진이 이곳에 채워집니다! 조금만 기다려주세요.</p>
                 <button class="w-full py-4 bg-slate-900 font-black text-white rounded-2xl shadow-xl hover:bg-slate-800 transition-colors active:scale-95" onclick="closeModal('galleryNoticeModal')">기대할게요!</button>
             </div>
         </div>
@@ -391,11 +495,11 @@
         
         window.onscroll = function() { let winScroll = document.body.scrollTop || document.documentElement.scrollTop; let height = document.documentElement.scrollHeight - document.documentElement.clientHeight; let scrolled = (winScroll / height) * 100; document.getElementById("scroll-progress").style.width = scrolled + "%"; };
         function updateCountdown() {
-            const targetDate = new Date('March 25, 2026 00:00:00').getTime();
+            const targetDate = new Date('March 26, 2026 00:00:00').getTime();
             const now = new Date().getTime(); const gap = targetDate - now;
             const countdownEl = document.getElementById('countdown-timer');
             if (gap <= 0) {
-                const endGap = new Date('April 1, 2026 23:59:59').getTime() - now;
+                const endGap = new Date('April 3, 2026 23:59:59').getTime() - now;
                 if (endGap > 0) { countdownEl.innerHTML = "참여 가능! 🔥"; countdownEl.parentElement.classList.add('bg-rose-500'); }
                 else { countdownEl.innerHTML = "캠페인 종료 ✅"; }
                 return;
