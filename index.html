@@ -259,7 +259,9 @@
                     </div>
                 </div>
             </div>
-            <div class="pt-10 border-t border-slate-200/50 text-center"><p class="text-[9px] md:text-[10px] text-slate-400 uppercase tracking-[0.4em] font-bold">&copy; 2026 HWANGJI VOLUNTEER CLUB. ALL RIGHTS RESERVED.</p></div>
+            <div class="pt-10 border-t border-slate-200/50 text-center flex flex-col items-center gap-6">
+                <p class="text-[9px] md:text-[10px] text-slate-400 uppercase tracking-[0.4em] font-bold">&copy; 2026 HWANGJI VOLUNTEER CLUB. ALL RIGHTS RESERVED.</p>
+            </div>
         </div>
     </footer>
 
@@ -292,9 +294,14 @@
                         <div class="space-y-6">
                             <h4 class="text-slate-400 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 flex items-center gap-2"><i class="fas fa-trophy text-yellow-500"></i> 실시간 랭킹 Top 3</h4>
                             <div class="space-y-3">
-                                <div class="flex justify-between items-center bg-yellow-50/50 p-5 rounded-3xl border border-yellow-100"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-yellow-400 text-white font-black flex items-center justify-center text-xs shadow-sm">1</div><span class="text-base font-black text-slate-900">집계 대기 중</span></div><span class="text-xs font-black">- KG</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-5 rounded-3xl border border-slate-200/50 opacity-80"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-slate-300 text-white font-black flex items-center justify-center text-xs shadow-sm">2</div><span class="text-base font-black italic text-slate-500">쟁탈전 준비</span></div><span class="text-xs font-black">- KG</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-5 rounded-3xl border border-slate-200/50 opacity-50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-orange-300/50 text-white font-black flex items-center justify-center text-xs">3</div><span class="text-base font-black text-slate-400">Coming</span></div><span class="text-xs font-black">- KG</span></div>
+                                <div class="flex justify-between items-center bg-yellow-50/50 p-5 rounded-3xl border border-yellow-100"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-yellow-400 text-white font-black flex items-center justify-center text-xs shadow-sm">1</div><span class="text-base font-black text-slate-900">2학년 2반</span></div><span class="text-sm font-black text-yellow-600">6.90 KG</span></div>
+                                <div class="flex justify-between items-center bg-slate-50 p-5 rounded-3xl border border-slate-200/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-slate-400 text-white font-black flex items-center justify-center text-xs shadow-sm">2</div><span class="text-base font-black text-slate-700">3학년 2반</span></div><span class="text-sm font-black text-slate-500">6.59 KG</span></div>
+                                <div class="flex justify-between items-center bg-orange-50/30 p-5 rounded-3xl border border-orange-100/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-orange-400 text-white font-black flex items-center justify-center text-xs shadow-sm">3</div><span class="text-base font-black text-orange-800">3학년 1반, 2학년 3반 <span class="text-[10px] font-black text-orange-600 opacity-70">(공동)</span></span></div><span class="text-sm font-black text-orange-600">6.41 KG</span></div>
+                            </div>
+                            <!-- 패널티 공지 -->
+                            <div class="mt-4 p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-start gap-3">
+                                <span class="text-rose-500">⚠️</span>
+                                <p class="text-sm text-rose-600 font-bold leading-relaxed break-keep">3학년 3반은 옳지 못한 재활용 상태로 인해 이번 측정에서 배제되었습니다.</p>
                             </div>
                         </div>
                         <div class="space-y-6">
@@ -318,11 +325,11 @@
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md" onclick="closeModal('scheduleListModal')"></div>
             <div class="glass-card rounded-[2.5rem] p-10 max-w-xl w-full relative z-10 shadow-2xl bg-white/95">
                 <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl md:rounded-[1.5rem] bg-blue-50 flex items-center justify-center text-2xl md:text-3xl mb-8 md:mb-10 shrink-0 shadow-inner">🗓️</div>
-                <h3 class="text-3xl font-black mb-10 text-center">3월 활동 일정표</h3>
+                <h3 class="text-3xl font-black mb-10 text-center">이달의 활동 일정표</h3>
                 <div class="space-y-6 font-bold">
                     <div class="p-6 rounded-2xl border-2 border-brand/20 bg-brand-light/30 flex justify-between items-center cursor-pointer hover:bg-brand-light/50 transition-colors" onclick="closeModal('scheduleListModal'); setTimeout(() => openModal('plasticModal'), 300)">
-                        <div><h4 class="text-brand-dark font-black">플라스틱 대항전 ♻️</h4><p class="text-xs opacity-60">03.26 - 04.03</p></div>
-                        <span class="bg-brand text-white font-black px-3 py-1 rounded-full text-[10px]">진행예정</span>
+                        <div><h4 class="text-brand-dark font-black">플라스틱 대항전 ♻️</h4><p class="text-xs opacity-60">~ 04.09</p></div>
+                        <span class="bg-rose-500 text-white font-black px-3 py-1 rounded-full text-[10px] animate-pulse">진행중</span>
                     </div>
                     <div class="p-6 rounded-2xl border border-slate-200/50 bg-slate-50 flex justify-between items-center opacity-60">
                         <div><h4 class="text-slate-500 font-black">학교 대청소 봉사 🧹</h4><p class="text-xs">Schedule Pending</p></div>
@@ -499,9 +506,17 @@
             const now = new Date().getTime(); const gap = targetDate - now;
             const countdownEl = document.getElementById('countdown-timer');
             if (gap <= 0) {
-                const endGap = new Date('April 3, 2026 23:59:59').getTime() - now;
-                if (endGap > 0) { countdownEl.innerHTML = "참여 가능! 🔥"; countdownEl.parentElement.classList.add('bg-rose-500'); }
-                else { countdownEl.innerHTML = "캠페인 종료 ✅"; }
+                const endGap = new Date('April 9, 2026 23:59:59').getTime() - now;
+                if (endGap > 0) { 
+                    countdownEl.innerHTML = "참여 가능! 🔥"; 
+                    countdownEl.classList.remove('bg-brand');
+                    countdownEl.classList.add('bg-rose-500', 'animate-pulse');
+                }
+                else { 
+                    countdownEl.innerHTML = "캠페인 종료 ✅"; 
+                    countdownEl.classList.remove('bg-brand', 'bg-rose-500', 'animate-pulse');
+                    countdownEl.classList.add('bg-slate-500');
+                }
                 return;
             }
             const days = Math.floor(gap / (1000 * 60 * 60 * 24)); const hours = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const mins = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60)); const secs = Math.floor((gap % (1000 * 60)) / 1000);
