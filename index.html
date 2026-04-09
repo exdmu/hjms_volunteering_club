@@ -294,9 +294,31 @@
                         <div class="space-y-6">
                             <h4 class="text-slate-400 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 flex items-center gap-2"><i class="fas fa-trophy text-yellow-500"></i> 실시간 랭킹 Top 3</h4>
                             <div class="space-y-3">
-                                <div class="flex justify-between items-center bg-yellow-50/50 p-5 rounded-3xl border border-yellow-100"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-yellow-400 text-white font-black flex items-center justify-center text-xs shadow-sm">1</div><span class="text-base font-black text-slate-900">2학년 2반</span></div><span class="text-sm font-black text-yellow-600">6.90 KG</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-5 rounded-3xl border border-slate-200/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-slate-400 text-white font-black flex items-center justify-center text-xs shadow-sm">2</div><span class="text-base font-black text-slate-700">3학년 2반</span></div><span class="text-sm font-black text-slate-500">6.59 KG</span></div>
-                                <div class="flex justify-between items-center bg-orange-50/30 p-5 rounded-3xl border border-orange-100/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-orange-400 text-white font-black flex items-center justify-center text-xs shadow-sm">3</div><span class="text-base font-black text-orange-800">3학년 1반, 2학년 3반 <span class="text-[10px] font-black text-orange-600 opacity-70">(공동)</span></span></div><span class="text-sm font-black text-orange-600">6.41 KG</span></div>
+                                <div class="flex justify-between items-center bg-yellow-50/50 p-5 rounded-3xl border border-yellow-100">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-10 h-10 rounded-full bg-yellow-400 text-white font-black flex items-center justify-center text-xs shadow-sm">1</div>
+                                            <span class="text-base font-black text-slate-900">2학년 2반, 3학년 2반 <span class="text-[10px] font-black text-yellow-600 opacity-70">(공동)</span></span>
+                                        </div>
+                                        <span class="text-[10px] bg-rose-100 text-rose-600 px-2 py-1 rounded-full w-max ml-14 font-bold animate-pulse">🔥 월요일까지 연장전!</span>
+                                    </div>
+                                    <span class="text-sm font-black text-yellow-600">7.02 KG</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-50 p-5 rounded-3xl border border-slate-200/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-slate-400 text-white font-black flex items-center justify-center text-xs shadow-sm">2</div><span class="text-base font-black text-slate-700">1학년 3반</span></div><span class="text-sm font-black text-slate-500">6.96 KG</span></div>
+                                <div class="flex justify-between items-center bg-orange-50/30 p-5 rounded-3xl border border-orange-100/50"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-orange-400 text-white font-black flex items-center justify-center text-xs shadow-sm">3</div><span class="text-base font-black text-orange-800">2학년 3반</span></div><span class="text-sm font-black text-orange-600">6.68 KG</span></div>
+                                
+                                <!-- 더보기 토글 버튼 -->
+                                <button onclick="toggleMoreRankings()" class="w-full py-2 mt-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center gap-1">
+                                    전체 순위 보기 <i id="more-ranking-icon" class="fas fa-chevron-down"></i>
+                                </button>
+                                
+                                <!-- 더보기 랭킹 영역 -->
+                                <div id="more-rankings" class="hidden space-y-2 mt-2">
+                                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-100"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-black flex items-center justify-center text-xs">4</div><span class="text-sm font-bold text-slate-600">1학년 1반</span></div><span class="text-xs font-black text-slate-400">6.47 KG</span></div>
+                                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-100"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-black flex items-center justify-center text-xs">5</div><span class="text-sm font-bold text-slate-600">3학년 1반</span></div><span class="text-xs font-black text-slate-400">6.36 KG</span></div>
+                                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-100"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-black flex items-center justify-center text-xs">6</div><span class="text-sm font-bold text-slate-600">1학년 2반</span></div><span class="text-xs font-black text-slate-400">6.28 KG</span></div>
+                                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-100"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-black flex items-center justify-center text-xs">7</div><span class="text-sm font-bold text-slate-600">2학년 1반</span></div><span class="text-xs font-black text-slate-400">6.18 KG</span></div>
+                                </div>
                             </div>
                             <!-- 패널티 공지 -->
                             <div class="mt-4 p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-start gap-3">
@@ -500,6 +522,20 @@
         function toggleFaq(el) { const p = el.querySelector('p'); const icon = el.querySelector('i'); p.classList.toggle('hidden'); icon.style.transform = p.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; el.classList.toggle('shadow-xl'); }
         function showToast(msg) { const toast = document.getElementById("toast"); toast.innerText = msg; toast.className = "show"; setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000); }
         
+        function toggleMoreRankings() {
+            const moreDiv = document.getElementById('more-rankings');
+            const icon = document.getElementById('more-ranking-icon');
+            if (moreDiv.classList.contains('hidden')) {
+                moreDiv.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                moreDiv.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
         window.onscroll = function() { let winScroll = document.body.scrollTop || document.documentElement.scrollTop; let height = document.documentElement.scrollHeight - document.documentElement.clientHeight; let scrolled = (winScroll / height) * 100; document.getElementById("scroll-progress").style.width = scrolled + "%"; };
         function updateCountdown() {
             const targetDate = new Date('March 26, 2026 00:00:00').getTime();
